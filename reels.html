@@ -1,0 +1,2131 @@
+{% extends "base.html" %}
+
+{% block title %}SNEK.PY — Reels{% endblock %}
+
+{% block content %}
+
+<style>
+
+/* =========================================================
+   SNEK.PY REELS
+   ========================================================= */
+
+.reels-page {
+    max-width: 1250px;
+    margin: auto;
+    padding: 35px 20px 60px;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.reels-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.reels-header h1 {
+    margin: 0;
+    font-size: 40px;
+}
+
+.reels-header p {
+    margin: 8px 0 0;
+    color: #999;
+}
+
+
+.create-button {
+    border: none;
+    background: #8b5cf6;
+    color: white;
+    padding: 13px 20px;
+    border-radius: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.create-button:hover {
+    opacity: 0.85;
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+.reels-search {
+    margin-bottom: 20px;
+}
+
+.reels-search input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 15px 18px;
+    border-radius: 12px;
+    border: 1px solid #292936;
+    background: #15151d;
+    color: white;
+    outline: none;
+    font-size: 15px;
+}
+
+.reels-search input:focus {
+    border-color: #8b5cf6;
+}
+
+body.light .reels-search input {
+    background: white;
+    color: #111;
+    border-color: #ddd;
+}
+
+
+/* =========================================================
+   CATEGORIES
+   ========================================================= */
+
+.reel-categories {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    margin-bottom: 30px;
+    padding-bottom: 5px;
+}
+
+.category-btn {
+    flex-shrink: 0;
+    border: 1px solid #292936;
+    background: #171720;
+    color: #aaa;
+    padding: 10px 17px;
+    border-radius: 30px;
+    cursor: pointer;
+}
+
+.category-btn:hover {
+    color: white;
+}
+
+.category-btn.active {
+    background: #8b5cf6;
+    color: white;
+    border-color: #8b5cf6;
+}
+
+body.light .category-btn {
+    background: #f3f3f5;
+    color: #555;
+    border-color: #ddd;
+}
+
+body.light .category-btn.active {
+    background: #8b5cf6;
+    color: white;
+}
+
+
+/* =========================================================
+   LAYOUT
+   ========================================================= */
+
+.reels-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 30px;
+    align-items: start;
+}
+
+
+/* =========================================================
+   FEED
+   ========================================================= */
+
+.reels-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+
+/* =========================================================
+   REEL CARD
+   ========================================================= */
+
+.reel-card {
+    background: #121219;
+    border: 1px solid #24242f;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+body.light .reel-card {
+    background: white;
+    border-color: #e3e3e3;
+}
+
+
+/* =========================================================
+   CREATOR
+   ========================================================= */
+
+.reel-user {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 17px;
+}
+
+.user-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: #8b5cf6;
+    color: white;
+    font-weight: bold;
+}
+
+.username {
+    font-weight: bold;
+}
+
+.handle {
+    font-size: 13px;
+    color: #888;
+    margin-top: 3px;
+}
+
+.follow-btn {
+    background: transparent;
+    color: #a78bfa;
+    border: 1px solid #8b5cf6;
+    border-radius: 9px;
+    padding: 8px 13px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.follow-btn.following {
+    background: #8b5cf6;
+    color: white;
+}
+
+
+/* =========================================================
+   REEL VISUAL
+   ========================================================= */
+
+.reel-visual {
+    position: relative;
+    height: 520px;
+    overflow: hidden;
+    background: #08080d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.reel-visual.playing {
+    background:
+        radial-gradient(
+            circle at 20% 20%,
+            rgba(139,92,246,0.5),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at 80% 80%,
+            rgba(236,72,153,0.4),
+            transparent 35%
+        ),
+        #08080d;
+}
+
+
+/* =========================================================
+   CODE WINDOW
+   ========================================================= */
+
+.code-window {
+    width: 78%;
+    max-width: 560px;
+    background: #111118;
+    border: 1px solid #30303b;
+    border-radius: 15px;
+    padding: 22px;
+    box-sizing: border-box;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+    transition: 0.3s;
+}
+
+.reel-visual.playing .code-window {
+    transform: scale(1.03);
+}
+
+.dots {
+    display: flex;
+    gap: 7px;
+    margin-bottom: 20px;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #666;
+}
+
+.code {
+    font-family: Consolas, monospace;
+    color: #eee;
+    font-size: 16px;
+    line-height: 1.8;
+    white-space: pre-wrap;
+}
+
+.purple {
+    color: #c084fc;
+}
+
+.green {
+    color: #86efac;
+}
+
+.blue {
+    color: #67e8f9;
+}
+
+.gray {
+    color: #777;
+}
+
+
+/* =========================================================
+   PLAY BUTTON
+   ========================================================= */
+
+.play-btn {
+    position: absolute;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: none;
+    background: #8b5cf6;
+    color: white;
+    font-size: 25px;
+    cursor: pointer;
+    z-index: 5;
+    transition: 0.2s;
+}
+
+.play-btn:hover {
+    transform: scale(1.1);
+}
+
+.reel-visual.playing .play-btn {
+    opacity: 0;
+}
+
+
+/* =========================================================
+   REEL TEXT
+   ========================================================= */
+
+.reel-info {
+    padding: 18px;
+}
+
+.reel-title {
+    font-size: 19px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.reel-description {
+    color: #999;
+    line-height: 1.6;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.tag {
+    background: rgba(139,92,246,0.12);
+    color: #a78bfa;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.actions {
+    display: flex;
+    gap: 5px;
+    padding: 0 17px 17px;
+}
+
+.action-btn {
+    border: none;
+    background: transparent;
+    color: #aaa;
+    padding: 9px 12px;
+    border-radius: 9px;
+    cursor: pointer;
+}
+
+.action-btn:hover {
+    background: rgba(255,255,255,0.06);
+    color: white;
+}
+
+.action-btn.active {
+    color: #ec4899;
+}
+
+
+/* =========================================================
+   COMMENTS
+   ========================================================= */
+
+.comments {
+    display: none;
+    padding: 18px;
+    border-top: 1px solid #25252f;
+}
+
+.comments.open {
+    display: block;
+}
+
+.comment-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.comment {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.comment-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #8b5cf6;
+    display: grid;
+    place-items: center;
+    color: white;
+    font-size: 12px;
+    flex-shrink: 0;
+}
+
+.comment-text {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.comment-form {
+    display: flex;
+    gap: 8px;
+}
+
+.comment-form input {
+    flex: 1;
+    padding: 11px;
+    border-radius: 9px;
+    border: 1px solid #292936;
+    background: #181820;
+    color: white;
+    outline: none;
+}
+
+.comment-form button {
+    border: none;
+    background: #8b5cf6;
+    color: white;
+    border-radius: 9px;
+    padding: 0 15px;
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: sticky;
+    top: 100px;
+}
+
+.side-card {
+    background: #121219;
+    border: 1px solid #24242f;
+    border-radius: 16px;
+    padding: 20px;
+}
+
+body.light .side-card {
+    background: white;
+    border-color: #e3e3e3;
+}
+
+.side-card h3 {
+    margin-top: 0;
+}
+
+.trending {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #25252f;
+}
+
+.trending:last-child {
+    border-bottom: none;
+}
+
+.trending-name {
+    font-weight: bold;
+}
+
+.trending-count {
+    color: #888;
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   NO RESULTS
+   ========================================================= */
+
+.no-results {
+    display: none;
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.no-results h2 {
+    margin-bottom: 10px;
+}
+
+.no-results p {
+    color: #888;
+}
+
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 20px;
+}
+
+.modal.open {
+    display: flex;
+}
+
+.modal-box {
+    width: 100%;
+    max-width: 550px;
+    background: #15151d;
+    border-radius: 20px;
+    padding: 25px;
+    box-sizing: border-box;
+}
+
+.modal-box h2 {
+    margin-top: 0;
+}
+
+.modal-field {
+    margin-bottom: 17px;
+}
+
+.modal-field label {
+    display: block;
+    margin-bottom: 7px;
+    font-weight: bold;
+}
+
+.modal-field input,
+.modal-field textarea,
+.modal-field select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    border-radius: 9px;
+    border: 1px solid #292936;
+    background: #0e0e14;
+    color: white;
+    outline: none;
+}
+
+.modal-field textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.cancel-btn,
+.publish-btn {
+    border: none;
+    padding: 11px 18px;
+    border-radius: 9px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.cancel-btn {
+    background: #33333e;
+    color: white;
+}
+
+.publish-btn {
+    background: #8b5cf6;
+    color: white;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .reels-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+        position: static;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .reels-page {
+        padding: 25px 12px 50px;
+    }
+
+    .reels-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .reels-header h1 {
+        font-size: 32px;
+    }
+
+    .reel-visual {
+        height: 450px;
+    }
+
+    .code-window {
+        width: 88%;
+    }
+
+    .code {
+        font-size: 13px;
+    }
+
+    .actions {
+        flex-wrap: wrap;
+    }
+
+}
+
+</style>
+
+
+<!-- =========================================================
+     PAGE
+     ========================================================= -->
+
+<div class="reels-page">
+
+
+    <!-- HEADER -->
+
+    <div class="reels-header">
+
+        <div>
+
+            <h1>🎬 Python Reels</h1>
+
+            <p>
+                Learn Python through short, useful and fun content.
+            </p>
+
+        </div>
+
+
+        <button
+            class="create-button"
+            onclick="openCreateModal()">
+
+            ＋ Create Reel
+
+        </button>
+
+    </div>
+
+
+    <!-- SEARCH -->
+
+    <div class="reels-search">
+
+        <input
+            id="searchInput"
+            type="text"
+            placeholder="🔍 Search Python reels, topics or creators..."
+            oninput="searchReels()">
+
+    </div>
+
+
+    <!-- CATEGORIES -->
+
+    <div class="reel-categories">
+
+        <button
+            class="category-btn active"
+            onclick="filterReels('all', this)">
+
+            For You
+
+        </button>
+
+
+        <button
+            class="category-btn"
+            onclick="filterReels('python', this)">
+
+            🐍 Python Tips
+
+        </button>
+
+
+        <button
+            class="category-btn"
+            onclick="filterReels('coding', this)">
+
+            💻 Coding
+
+        </button>
+
+
+        <button
+            class="category-btn"
+            onclick="filterReels('debugging', this)">
+
+            🐛 Debugging
+
+        </button>
+
+
+        <button
+            class="category-btn"
+            onclick="filterReels('projects', this)">
+
+            🚀 Projects
+
+        </button>
+
+
+        <button
+            class="category-btn"
+            onclick="filterReels('aiml', this)">
+
+            🤖 AI / ML
+
+        </button>
+
+
+        <button
+            class="category-btn"
+            onclick="filterReels('interview', this)">
+
+            🎯 Interview
+
+        </button>
+
+    </div>
+
+
+    <!-- MAIN -->
+
+    <div class="reels-layout">
+
+
+        <!-- FEED -->
+
+        <div class="reels-feed" id="reelsFeed">
+
+
+            <!-- =================================================
+                 REEL 1
+                 ================================================= -->
+
+            <article
+                class="reel-card"
+                data-category="python coding"
+                data-search="python print beginner coding tips">
+
+                <div class="reel-user">
+
+                    <div class="user-left">
+
+                        <div class="avatar">
+                            P
+                        </div>
+
+                        <div>
+
+                            <div class="username">
+                                PythonPro
+                            </div>
+
+                            <div class="handle">
+                                @pythonpro · 2h
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        class="follow-btn"
+                        onclick="followCreator(this)">
+
+                        Follow
+
+                    </button>
+
+                </div>
+
+
+                <div class="reel-visual">
+
+
+                    <div class="code-window">
+
+                        <div class="dots">
+
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+
+                        </div>
+
+
+                        <div class="code">
+
+<span class="gray"># Python beginner tip 🐍</span>
+
+<span class="purple">print</span>(
+    <span class="green">"Hello, SNEK.PY!"</span>
+)
+
+<span class="gray"># That's it!</span>
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        class="play-btn"
+                        onclick="playReel(this)">
+
+                        ▶
+
+                    </button>
+
+                </div>
+
+
+                <div class="reel-info">
+
+                    <div class="reel-title">
+                        The easiest Python function you should know
+                    </div>
+
+                    <div class="reel-description">
+                        Learn the print() function and start writing
+                        Python programs today.
+                    </div>
+
+
+                    <div class="tags">
+
+                        <span class="tag">
+                            #python
+                        </span>
+
+                        <span class="tag">
+                            #beginner
+                        </span>
+
+                        <span class="tag">
+                            #coding
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="actions">
+
+                    <button
+                        class="action-btn"
+                        onclick="likeReel(this)">
+
+                        ❤️ <span>128</span>
+
+                    </button>
+
+
+                    <button
+                        class="action-btn"
+                        onclick="commentsToggle(this)">
+
+                        💬 <span>18</span>
+
+                    </button>
+
+
+                    <button
+                        class="action-btn"
+                        onclick="saveReel(this)">
+
+                        🔖 Save
+
+                    </button>
+
+
+                    <button
+                        class="action-btn"
+                        onclick="shareReel()">
+
+                        📤 Share
+
+                    </button>
+
+                </div>
+
+
+                <div class="comments">
+
+                    <div class="comment-list">
+
+                        <div class="comment">
+
+                            <div class="comment-avatar">
+                                A
+                            </div>
+
+                            <div class="comment-text">
+                                This is really easy to understand! 🔥
+                            </div>
+
+                        </div>
+
+
+                        <div class="comment">
+
+                            <div class="comment-avatar">
+                                S
+                            </div>
+
+                            <div class="comment-text">
+                                Perfect for beginners.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="comment-form">
+
+                        <input
+                            type="text"
+                            placeholder="Write a comment...">
+
+                        <button onclick="addComment(this)">
+                            Send
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <!-- =================================================
+                 REEL 2
+                 ================================================= -->
+
+            <article
+                class="reel-card"
+                data-category="debugging coding"
+                data-search="debugging python errors coding mistakes">
+
+                <div class="reel-user">
+
+                    <div class="user-left">
+
+                        <div class="avatar">
+                            D
+                        </div>
+
+                        <div>
+
+                            <div class="username">
+                                DebugWithMe
+                            </div>
+
+                            <div class="handle">
+                                @debugwithme · 5h
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        class="follow-btn"
+                        onclick="followCreator(this)">
+
+                        Follow
+
+                    </button>
+
+                </div>
+
+
+                <div class="reel-visual">
+
+
+                    <div class="code-window">
+
+                        <div class="dots">
+
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+
+                        </div>
+
+
+                        <div class="code">
+
+<span class="gray"># Debugging tip 🐛</span>
+
+<span class="purple">print</span>(
+    <span class="green">"Check your brackets!"</span>
+)
+
+<span class="gray"># Always check syntax.</span>
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        class="play-btn"
+                        onclick="playReel(this)">
+
+                        ▶
+
+                    </button>
+
+                </div>
+
+
+                <div class="reel-info">
+
+                    <div class="reel-title">
+                        One tiny mistake that causes a huge error
+                    </div>
+
+                    <div class="reel-description">
+                        Missing brackets can stop your entire program.
+                        Here's a simple debugging habit.
+                    </div>
+
+
+                    <div class="tags">
+
+                        <span class="tag">
+                            #debugging
+                        </span>
+
+                        <span class="tag">
+                            #errors
+                        </span>
+
+                        <span class="tag">
+                            #python
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="actions">
+
+                    <button
+                        class="action-btn"
+                        onclick="likeReel(this)">
+
+                        ❤️ <span>94</span>
+
+                    </button>
+
+
+                    <button
+                        class="action-btn"
+                        onclick="commentsToggle(this)">
+
+                        💬 <span>12</span>
+
+                    </button>
+
+
+                    <button
+                        class="action-btn"
+                        onclick="saveReel(this)">
+
+                        🔖 Save
+
+                    </button>
+
+
+                    <button
+                        class="action-btn"
+                        onclick="shareReel()">
+
+                        📤 Share
+
+                    </button>
+
+                </div>
+
+
+                <div class="comments">
+
+                    <div class="comment-list">
+
+                        <div class="comment">
+
+                            <div class="comment-avatar">
+                                R
+                            </div>
+
+                            <div class="comment-text">
+                                This happened to me yesterday 😂
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="comment-form">
+
+                        <input
+                            type="text"
+                            placeholder="Write a comment...">
+
+                        <button onclick="addComment(this)">
+                            Send
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <!-- =================================================
+                 REEL 3
+                 ================================================= -->
+
+            <article
+                class="reel-card"
+                data-category="projects aiml"
+                data-search="ai machine learning python project">
+
+                <div class="reel-user">
+
+                    <div class="user-left">
+
+                        <div class="avatar">
+                            A
+                        </div>
+
+                        <div>
+
+                            <div class="username">
+                                AIMLStudent
+                            </div>
+
+                            <div class="handle">
+                                @aimlstudent · 1d
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        class="follow-btn"
+                        onclick="followCreator(this)">
+
+                        Follow
+
+                    </button>
+
+                </div>
+
+
+                <div class="reel-visual">
+
+
+                    <div class="code-window">
+
+                        <div class="dots">
+
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+
+                        </div>
+
+
+                        <div class="code">
+
+<span class="gray"># AI / ML project 🤖</span>
+
+<span class="purple">import</span> numpy <span class="purple">as</span> np
+
+data = np.array(
+    [1, 2, 3, 4, 5]
+)
+
+<span class="purple">print</span>(data)
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        class="play-btn"
+                        onclick="playReel(this)">
+
+                        ▶
+
+                    </button>
+
+                </div>
+
+
+                <div class="reel-info">
+
+                    <div class="reel-title">
+                        My first Python + AI project
+                    </div>
+
+                    <div class="reel-description">
+                        A small project can be the beginning of something
+                        much bigger. Keep building!
+                    </div>
+
+
+                    <div class="tags">
+
+                        <span class="tag">
+                            #AI
+                        </span>
+
+                        <span class="tag">
+                            #machinelearning
+                        </span>
+
+                        <span class="tag">
+                            #project
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="actions">
+
+                    <button
+                        class="action-btn"
+                        onclick="likeReel(this)">
+
+                        ❤️ <span>241</span>
+
+                    </button>
+
+
+                    <button
+                        class="action-btn"
+                        onclick="commentsToggle(this)">
+
+                        💬 <span>31</span>
+
+                    </button>
+
+
+                    <button
+                        class="action-btn"
+                        onclick="saveReel(this)">
+
+                        🔖 Save
+
+                    </button>
+
+
+                    <button
+                        class="action-btn"
+                        onclick="shareReel()">
+
+                        📤 Share
+
+                    </button>
+
+                </div>
+
+
+                <div class="comments">
+
+                    <div class="comment-list">
+
+                        <div class="comment">
+
+                            <div class="comment-avatar">
+                                M
+                            </div>
+
+                            <div class="comment-text">
+                                Great project idea! 🚀
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="comment-form">
+
+                        <input
+                            type="text"
+                            placeholder="Write a comment...">
+
+                        <button onclick="addComment(this)">
+                            Send
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+
+        </div>
+
+
+        <!-- SIDEBAR -->
+
+        <aside class="sidebar">
+
+
+            <div class="side-card">
+
+                <h3>
+                    🔥 Trending
+                </h3>
+
+
+                <div class="trending">
+
+                    <span class="trending-name">
+                        #Python
+                    </span>
+
+                    <span class="trending-count">
+                        2.4K
+                    </span>
+
+                </div>
+
+
+                <div class="trending">
+
+                    <span class="trending-name">
+                        #AI
+                    </span>
+
+                    <span class="trending-count">
+                        1.8K
+                    </span>
+
+                </div>
+
+
+                <div class="trending">
+
+                    <span class="trending-name">
+                        #Coding
+                    </span>
+
+                    <span class="trending-count">
+                        1.5K
+                    </span>
+
+                </div>
+
+
+                <div class="trending">
+
+                    <span class="trending-name">
+                        #Debugging
+                    </span>
+
+                    <span class="trending-count">
+                        940
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="side-card">
+
+                <h3>
+                    👥 Creator Community
+                </h3>
+
+                <p style="color:#888;line-height:1.6;">
+                    Follow Python students, developers and
+                    creators who share useful coding content.
+                </p>
+
+                <button
+                    class="create-button"
+                    onclick="alert('Creator discovery is coming to the SNEK.PY community! 🐍')">
+
+                    Explore Creators
+
+                </button>
+
+            </div>
+
+
+            <div class="side-card">
+
+                <h3>
+                    🏆 SNEK.PY
+                </h3>
+
+                <p style="color:#888;line-height:1.6;">
+                    Learn. Build. Create. Share.
+                </p>
+
+                <strong style="color:#8b5cf6;">
+                    Your code can inspire someone.
+                </strong>
+
+            </div>
+
+        </aside>
+
+    </div>
+
+
+    <!-- NO RESULTS -->
+
+    <div
+        class="no-results"
+        id="noResults">
+
+        <h2>
+            🐍 No reels found
+        </h2>
+
+        <p>
+            Try another category or search something else.
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     CREATE REEL MODAL
+     ========================================================= -->
+
+<div
+    class="modal"
+    id="createModal"
+    onclick="closeOutside(event)">
+
+
+    <div class="modal-box">
+
+        <h2>
+            🎬 Create a Reel
+        </h2>
+
+        <p style="color:#888;">
+            Prepare your Python learning reel.
+        </p>
+
+
+        <div class="modal-field">
+
+            <label>
+                Reel Title
+            </label>
+
+            <input
+                id="reelTitle"
+                type="text"
+                placeholder="Example: 5 Python tricks">
+
+        </div>
+
+
+        <div class="modal-field">
+
+            <label>
+                Category
+            </label>
+
+            <select id="reelCategory">
+
+                <option>Python Tips</option>
+                <option>Coding</option>
+                <option>Debugging</option>
+                <option>Projects</option>
+                <option>AI / ML</option>
+                <option>Interview</option>
+
+            </select>
+
+        </div>
+
+
+        <div class="modal-field">
+
+            <label>
+                Description
+            </label>
+
+            <textarea
+                id="reelDescription"
+                placeholder="What will students learn from this reel?"></textarea>
+
+        </div>
+
+
+        <div class="modal-field">
+
+            <label>
+                Select Video
+            </label>
+
+            <input
+                id="reelFile"
+                type="file"
+                accept="video/*">
+
+        </div>
+
+
+        <div class="modal-buttons">
+
+            <button
+                class="cancel-btn"
+                onclick="closeCreateModal()">
+
+                Cancel
+
+            </button>
+
+
+            <button
+                class="publish-btn"
+                onclick="prepareReel()">
+
+                Continue
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   PLAY REEL
+   ========================================================= */
+
+function playReel(button) {
+
+    const visual =
+        button.closest(".reel-visual");
+
+    const currentlyPlaying =
+        visual.classList.contains("playing");
+
+
+    if (currentlyPlaying) {
+
+        visual.classList.remove("playing");
+
+        button.textContent = "▶";
+
+    } else {
+
+        visual.classList.add("playing");
+
+        button.textContent = "⏸";
+
+    }
+
+}
+
+
+/* =========================================================
+   LIKE
+   ========================================================= */
+
+function likeReel(button) {
+
+    const count =
+        button.querySelector("span");
+
+    let number =
+        parseInt(count.textContent);
+
+
+    if (button.classList.contains("active")) {
+
+        button.classList.remove("active");
+
+        number--;
+
+    } else {
+
+        button.classList.add("active");
+
+        number++;
+
+    }
+
+
+    count.textContent = number;
+
+}
+
+
+/* =========================================================
+   COMMENTS
+   ========================================================= */
+
+function commentsToggle(button) {
+
+    const card =
+        button.closest(".reel-card");
+
+    const comments =
+        card.querySelector(".comments");
+
+    comments.classList.toggle("open");
+
+}
+
+
+/* =========================================================
+   ADD COMMENT
+   ========================================================= */
+
+function addComment(button) {
+
+    const comments =
+        button.closest(".comments");
+
+    const input =
+        comments.querySelector("input");
+
+    const text =
+        input.value.trim();
+
+
+    if (!text) {
+
+        alert("Please write a comment first.");
+
+        return;
+
+    }
+
+
+    const list =
+        comments.querySelector(".comment-list");
+
+
+    const newComment =
+        document.createElement("div");
+
+    newComment.className = "comment";
+
+
+    const avatar =
+        document.createElement("div");
+
+    avatar.className = "comment-avatar";
+
+    avatar.textContent = "Y";
+
+
+    const message =
+        document.createElement("div");
+
+    message.className = "comment-text";
+
+    message.textContent = text;
+
+
+    newComment.appendChild(avatar);
+
+    newComment.appendChild(message);
+
+    list.appendChild(newComment);
+
+
+    input.value = "";
+
+}
+
+
+/* =========================================================
+   SAVE
+   ========================================================= */
+
+function saveReel(button) {
+
+    button.classList.toggle("active");
+
+
+    if (button.classList.contains("active")) {
+
+        button.textContent = "🔖 Saved";
+
+    } else {
+
+        button.textContent = "🔖 Save";
+
+    }
+
+}
+
+
+/* =========================================================
+   FOLLOW
+   ========================================================= */
+
+function followCreator(button) {
+
+    button.classList.toggle("following");
+
+
+    if (button.classList.contains("following")) {
+
+        button.textContent = "Following ✓";
+
+    } else {
+
+        button.textContent = "Follow";
+
+    }
+
+}
+
+
+/* =========================================================
+   SHARE
+   ========================================================= */
+
+function shareReel() {
+
+    const text =
+        "Check out this Python Reel on SNEK.PY! 🐍";
+
+
+    if (
+        navigator.share &&
+        typeof navigator.share === "function"
+    ) {
+
+        navigator.share({
+
+            title: "SNEK.PY",
+
+            text: text
+
+        }).catch(function () {});
+
+    } else if (
+        navigator.clipboard &&
+        navigator.clipboard.writeText
+    ) {
+
+        navigator.clipboard
+            .writeText(text)
+            .then(function () {
+
+                alert("📋 Reel link copied!");
+
+            })
+            .catch(function () {
+
+                alert(text);
+
+            });
+
+    } else {
+
+        alert(text);
+
+    }
+
+}
+
+
+/* =========================================================
+   CATEGORY FILTER
+   ========================================================= */
+
+function filterReels(category, button) {
+
+    const buttons =
+        document.querySelectorAll(".category-btn");
+
+
+    buttons.forEach(function(btn) {
+
+        btn.classList.remove("active");
+
+    });
+
+
+    button.classList.add("active");
+
+
+    const cards =
+        document.querySelectorAll(".reel-card");
+
+
+    let found = 0;
+
+
+    cards.forEach(function(card) {
+
+        const categories =
+            card.dataset.category.split(" ");
+
+
+        if (
+            category === "all" ||
+            categories.includes(category)
+        ) {
+
+            card.style.display = "";
+
+            found++;
+
+        } else {
+
+            card.style.display = "none";
+
+        }
+
+    });
+
+
+    showNoResults(found);
+
+}
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+function searchReels() {
+
+    const search =
+        document
+            .getElementById("searchInput")
+            .value
+            .toLowerCase()
+            .trim();
+
+
+    const cards =
+        document.querySelectorAll(".reel-card");
+
+
+    let found = 0;
+
+
+    cards.forEach(function(card) {
+
+        const text =
+            card.dataset.search.toLowerCase();
+
+
+        if (
+            search === "" ||
+            text.includes(search)
+        ) {
+
+            card.style.display = "";
+
+            found++;
+
+        } else {
+
+            card.style.display = "none";
+
+        }
+
+    });
+
+
+    showNoResults(found);
+
+}
+
+
+/* =========================================================
+   NO RESULTS
+   ========================================================= */
+
+function showNoResults(number) {
+
+    const noResults =
+        document.getElementById("noResults");
+
+
+    if (number === 0) {
+
+        noResults.style.display = "block";
+
+    } else {
+
+        noResults.style.display = "none";
+
+    }
+
+}
+
+
+/* =========================================================
+   CREATE MODAL
+   ========================================================= */
+
+function openCreateModal() {
+
+    document
+        .getElementById("createModal")
+        .classList.add("open");
+
+}
+
+
+function closeCreateModal() {
+
+    document
+        .getElementById("createModal")
+        .classList.remove("open");
+
+}
+
+
+function closeOutside(event) {
+
+    if (
+        event.target.id === "createModal"
+    ) {
+
+        closeCreateModal();
+
+    }
+
+}
+
+
+/* =========================================================
+   CREATE / VALIDATE REEL
+   ========================================================= */
+
+function prepareReel() {
+
+    const title =
+        document
+            .getElementById("reelTitle")
+            .value
+            .trim();
+
+
+    const description =
+        document
+            .getElementById("reelDescription")
+            .value
+            .trim();
+
+
+    const file =
+        document
+            .getElementById("reelFile")
+            .files[0];
+
+
+    if (!title) {
+
+        alert("Please enter a reel title.");
+
+        return;
+
+    }
+
+
+    if (!description) {
+
+        alert("Please enter a description.");
+
+        return;
+
+    }
+
+
+    if (!file) {
+
+        alert("Please select a video.");
+
+        return;
+
+    }
+
+
+    if (!file.type.startsWith("video/")) {
+
+        alert("Please select a valid video file.");
+
+        return;
+
+    }
+
+
+    alert(
+        "🎬 Reel details are ready!\n\n" +
+        "Title: " + title +
+        "\n\n" +
+        "The next SNEK.PY step will connect this " +
+        "video to the backend and database so it can " +
+        "be permanently uploaded and viewed by students."
+    );
+
+
+    closeCreateModal();
+
+}
+
+
+/* =========================================================
+   ESCAPE KEY CLOSES MODAL
+   ========================================================= */
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (event.key === "Escape") {
+
+            closeCreateModal();
+
+        }
+
+    }
+);
+
+</script>
+
+{% endblock %}

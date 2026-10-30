@@ -1,0 +1,890 @@
+{% extends "base.html" %}
+
+{% block title %}
+SNEK.PY — Code Lab
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    /* =========================================
+       SNEK.PY CODE LAB
+       Page-specific styling
+       ========================================= */
+
+    .code-lab-page {
+        width: min(1180px, 92%);
+        margin: 0 auto;
+        padding: 55px 0 90px;
+    }
+
+
+    /* =========================================
+       HERO
+       ========================================= */
+
+    .code-lab-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 40px;
+        margin-bottom: 40px;
+        padding: 45px;
+        border: 1px solid rgba(157, 78, 221, 0.25);
+        border-radius: 30px;
+        background:
+            radial-gradient(
+                circle at 85% 20%,
+                rgba(157, 78, 221, 0.20),
+                transparent 35%
+            ),
+            radial-gradient(
+                circle at 10% 100%,
+                rgba(0, 255, 170, 0.08),
+                transparent 35%
+            ),
+            rgba(20, 15, 28, 0.75);
+        box-shadow:
+            0 25px 70px rgba(0, 0, 0, 0.35),
+            inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+
+    .code-lab-header .lesson-tag {
+        margin-bottom: 14px;
+    }
+
+
+    .code-lab-header h1 {
+        margin: 0;
+        font-size: clamp(38px, 5vw, 64px);
+        line-height: 1.05;
+        letter-spacing: -2px;
+    }
+
+
+    .code-lab-header h1 span {
+        display: block;
+        background: linear-gradient(
+            90deg,
+            #b86cff,
+            #7c4dff,
+            #4de6c1
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+
+    .code-lab-header p:not(.lesson-tag) {
+        max-width: 650px;
+        margin-top: 20px;
+        font-size: 17px;
+        line-height: 1.7;
+        color: #aaa3b5;
+    }
+
+
+    .code-lab-icon {
+        min-width: 125px;
+        height: 125px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 32px;
+        font-size: 58px;
+        background: linear-gradient(
+            145deg,
+            rgba(157, 78, 221, 0.22),
+            rgba(77, 230, 193, 0.08)
+        );
+        border: 1px solid rgba(157, 78, 221, 0.3);
+        box-shadow:
+            0 20px 50px rgba(124, 77, 255, 0.18);
+    }
+
+
+    /* =========================================
+       EDITOR CARD
+       ========================================= */
+
+    .editor-card {
+        overflow: hidden;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: #111019;
+        box-shadow:
+            0 25px 60px rgba(0, 0, 0, 0.35);
+        margin-bottom: 28px;
+    }
+
+
+    .editor-top {
+        height: 62px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 22px;
+        background: #181620;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+
+    .editor-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #eeeaf2;
+        font-size: 14px;
+    }
+
+
+    .editor-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #57e6c0;
+        box-shadow: 0 0 15px rgba(87, 230, 192, 0.65);
+    }
+
+
+    .editor-status {
+        padding: 7px 13px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        color: #bca8ff;
+        background: rgba(124, 77, 255, 0.12);
+        border: 1px solid rgba(124, 77, 255, 0.22);
+    }
+
+
+    .editor-area {
+        padding: 0;
+        background: #0c0b10;
+    }
+
+
+    #codeEditor {
+        display: block;
+        width: 100%;
+        min-height: 340px;
+        resize: vertical;
+        border: none;
+        outline: none;
+        padding: 28px;
+        box-sizing: border-box;
+
+        background:
+            linear-gradient(
+                rgba(255,255,255,0.018) 1px,
+                transparent 1px
+            );
+        background-size: 100% 32px;
+
+        color: #eee9f5;
+
+        font-family:
+            "Cascadia Code",
+            "Fira Code",
+            Consolas,
+            monospace;
+
+        font-size: 15px;
+        line-height: 2;
+        tab-size: 4;
+        caret-color: #8e6cff;
+    }
+
+
+    #codeEditor::selection {
+        background: rgba(124, 77, 255, 0.35);
+    }
+
+
+    .editor-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 18px 22px;
+        background: #15131c;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+
+    .run-button,
+    .clear-button {
+        border: none;
+        border-radius: 12px;
+        padding: 12px 20px;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.2s ease;
+    }
+
+
+    .run-button {
+        color: #08070c;
+        background: linear-gradient(
+            135deg,
+            #9b6cff,
+            #65e5c1
+        );
+        box-shadow:
+            0 8px 25px rgba(124, 77, 255, 0.22);
+    }
+
+
+    .run-button:hover {
+        transform: translateY(-2px);
+        box-shadow:
+            0 12px 30px rgba(124, 77, 255, 0.32);
+    }
+
+
+    .clear-button {
+        color: #c7c1d0;
+        background: #25212d;
+        border: 1px solid rgba(255,255,255,0.08);
+    }
+
+
+    .clear-button:hover {
+        background: #302b39;
+        color: white;
+    }
+
+
+    /* =========================================
+       OUTPUT
+       ========================================= */
+
+    .output-card {
+        overflow: hidden;
+        margin-bottom: 45px;
+        border-radius: 22px;
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        background: #111019;
+        box-shadow:
+            0 18px 45px rgba(0, 0, 0, 0.25);
+    }
+
+
+    .output-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 17px 22px;
+        background: #181620;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+
+    .output-header > div {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+
+    .output-icon {
+        font-size: 18px;
+    }
+
+
+    .output-header strong {
+        font-size: 14px;
+    }
+
+
+    #outputStatus {
+        padding: 6px 11px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        color: #72e6c5;
+        background: rgba(77, 230, 193, 0.08);
+        border: 1px solid rgba(77, 230, 193, 0.16);
+    }
+
+
+    #codeOutput {
+        min-height: 100px;
+        margin: 0;
+        padding: 24px;
+        box-sizing: border-box;
+
+        color: #d9d2e3;
+
+        font-family:
+            "Cascadia Code",
+            "Fira Code",
+            Consolas,
+            monospace;
+
+        font-size: 14px;
+        line-height: 1.8;
+        white-space: pre-wrap;
+
+        background: #0c0b10;
+    }
+
+
+    /* =========================================
+       QUICK EXAMPLES
+       ========================================= */
+
+    .examples-section {
+        margin-bottom: 45px;
+    }
+
+
+    .examples-section .section-heading {
+        margin-bottom: 22px;
+    }
+
+
+    .example-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+    }
+
+
+    .example-card {
+        display: flex;
+        align-items: center;
+        gap: 17px;
+        text-align: left;
+
+        padding: 22px;
+        border-radius: 20px;
+
+        color: inherit;
+        background:
+            linear-gradient(
+                145deg,
+                rgba(255,255,255,0.035),
+                rgba(255,255,255,0.015)
+            );
+
+        border: 1px solid rgba(255,255,255,0.07);
+
+        cursor: pointer;
+        transition: 0.25s ease;
+    }
+
+
+    .example-card > span {
+        width: 52px;
+        height: 52px;
+        flex-shrink: 0;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 15px;
+        font-size: 25px;
+
+        background: rgba(124, 77, 255, 0.12);
+    }
+
+
+    .example-card h3 {
+        margin: 0 0 5px;
+        font-size: 16px;
+    }
+
+
+    .example-card p {
+        margin: 0;
+        color: #96909e;
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+
+    .example-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(157, 78, 221, 0.35);
+        background:
+            linear-gradient(
+                145deg,
+                rgba(124,77,255,0.11),
+                rgba(77,230,193,0.04)
+            );
+        box-shadow:
+            0 15px 35px rgba(0,0,0,0.22);
+    }
+
+
+    /* =========================================
+       CODING TIP
+       ========================================= */
+
+    .editor-tips {
+        display: flex;
+        align-items: flex-start;
+        gap: 18px;
+
+        padding: 25px;
+
+        border-radius: 22px;
+
+        background:
+            linear-gradient(
+                135deg,
+                rgba(124,77,255,0.10),
+                rgba(77,230,193,0.04)
+            );
+
+        border: 1px solid rgba(124,77,255,0.18);
+    }
+
+
+    .tip-icon {
+        width: 48px;
+        height: 48px;
+        flex-shrink: 0;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 14px;
+        background: rgba(124,77,255,0.14);
+        font-size: 22px;
+    }
+
+
+    .editor-tips h3 {
+        margin: 0 0 7px;
+        font-size: 16px;
+    }
+
+
+    .editor-tips p {
+        margin: 0;
+        color: #9d97a5;
+        line-height: 1.7;
+        font-size: 14px;
+    }
+
+
+    /* =========================================
+       LIGHT MODE
+       ========================================= */
+
+    body.light .code-lab-header {
+        background:
+            radial-gradient(
+                circle at 85% 20%,
+                rgba(124,77,255,0.10),
+                transparent 35%
+            ),
+            #ffffff;
+
+        border-color: rgba(124,77,255,0.14);
+        box-shadow: 0 20px 55px rgba(40,30,60,0.08);
+    }
+
+
+    body.light .code-lab-header p:not(.lesson-tag) {
+        color: #686171;
+    }
+
+
+    body.light .editor-card,
+    body.light .output-card {
+        background: #ffffff;
+        border-color: rgba(0,0,0,0.08);
+        box-shadow: 0 18px 45px rgba(30,20,50,0.08);
+    }
+
+
+    body.light .editor-top,
+    body.light .output-header,
+    body.light .editor-actions {
+        background: #f7f5fa;
+        border-color: rgba(0,0,0,0.07);
+    }
+
+
+    body.light .editor-title {
+        color: #27222e;
+    }
+
+
+    body.light .editor-area,
+    body.light #codeEditor,
+    body.light #codeOutput {
+        background-color: #fbfafc;
+        color: #27222e;
+    }
+
+
+    body.light .clear-button {
+        background: #efecf4;
+        color: #4d4656;
+    }
+
+
+    body.light .example-card {
+        background: #ffffff;
+        border-color: rgba(0,0,0,0.08);
+    }
+
+
+    body.light .example-card p,
+    body.light .editor-tips p {
+        color: #6e6875;
+    }
+
+
+    body.light .editor-tips {
+        background: linear-gradient(
+            135deg,
+            rgba(124,77,255,0.06),
+            rgba(77,230,193,0.03)
+        );
+    }
+
+
+    /* =========================================
+       RESPONSIVE
+       ========================================= */
+
+    @media (max-width: 850px) {
+
+        .code-lab-page {
+            width: 94%;
+            padding-top: 35px;
+        }
+
+
+        .code-lab-header {
+            padding: 30px;
+        }
+
+
+        .code-lab-icon {
+            min-width: 90px;
+            height: 90px;
+            font-size: 42px;
+        }
+
+
+        .example-grid {
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+
+    @media (max-width: 600px) {
+
+        .code-lab-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+
+        .code-lab-icon {
+            align-self: flex-end;
+        }
+
+
+        .code-lab-header h1 {
+            font-size: 40px;
+        }
+
+
+        #codeEditor {
+            min-height: 280px;
+            padding: 20px;
+            font-size: 13px;
+        }
+
+
+        .editor-actions {
+            flex-wrap: wrap;
+        }
+
+
+        .editor-tips {
+            padding: 20px;
+        }
+
+    }
+
+</style>
+
+
+<div class="code-lab-page">
+
+
+    <!-- =====================================
+         HERO
+         ===================================== -->
+
+    <section class="code-lab-header">
+
+        <div>
+
+            <p class="lesson-tag">
+                🐍 SNEK.PY CODE LAB
+            </p>
+
+            <h1>
+                Write Python.
+                <span>Run It. 🚀</span>
+            </h1>
+
+            <p>
+                Your personal Python playground.
+                Write code, experiment with ideas,
+                make mistakes, and learn by doing.
+            </p>
+
+        </div>
+
+        <div class="code-lab-icon">
+            💻
+        </div>
+
+    </section>
+
+
+    <!-- =====================================
+         CODE EDITOR
+         ===================================== -->
+
+    <section class="editor-card">
+
+        <div class="editor-top">
+
+            <div class="editor-title">
+
+                <span class="editor-dot"></span>
+
+                <strong>
+                    playground.py
+                </strong>
+
+            </div>
+
+            <span class="editor-status">
+                Python 3
+            </span>
+
+        </div>
+
+
+        <div class="editor-area">
+
+            <textarea
+                id="codeEditor"
+                spellcheck="false">print("Hello, SNEK.PY!")</textarea>
+
+        </div>
+
+
+        <div class="editor-actions">
+
+            <button
+                id="runCodeButton"
+                class="run-button"
+                type="button">
+
+                ▶ Run Code
+
+            </button>
+
+
+            <button
+                id="clearCodeButton"
+                class="clear-button"
+                type="button">
+
+                Clear
+
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================
+         OUTPUT
+         ===================================== -->
+
+    <section class="output-card">
+
+        <div class="output-header">
+
+            <div>
+
+                <span class="output-icon">
+                    🖥️
+                </span>
+
+                <strong>
+                    Output
+                </strong>
+
+            </div>
+
+            <span id="outputStatus">
+                Ready
+            </span>
+
+        </div>
+
+
+        <pre id="codeOutput">Click "Run Code" to see your output...</pre>
+
+    </section>
+
+
+    <!-- =====================================
+         QUICK EXAMPLES
+         ===================================== -->
+
+    <section class="examples-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <p class="section-label">
+                    ⚡ QUICK START
+                </p>
+
+                <h2>
+                    Try an example
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="example-grid">
+
+
+            <button
+                class="example-card"
+                type="button"
+                data-code='print("Hello, Python!")'>
+
+                <span>
+                    👋
+                </span>
+
+                <div>
+
+                    <h3>
+                        Hello Python
+                    </h3>
+
+                    <p>
+                        Print your first message
+                    </p>
+
+                </div>
+
+            </button>
+
+
+            <button
+                class="example-card"
+                type="button"
+                data-code='name = "Sahana"
+print("Hello", name)'>
+
+                <span>
+                    📦
+                </span>
+
+                <div>
+
+                    <h3>
+                        Variables
+                    </h3>
+
+                    <p>
+                        Store and use information
+                    </p>
+
+                </div>
+
+            </button>
+
+
+            <button
+                class="example-card"
+                type="button"
+                data-code='a = 10
+b = 5
+print(a + b)'>
+
+                <span>
+                    ➕
+                </span>
+
+                <div>
+
+                    <h3>
+                        Calculator
+                    </h3>
+
+                    <p>
+                        Perform a calculation
+                    </p>
+
+                </div>
+
+            </button>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================
+         TIP
+         ===================================== -->
+
+    <section class="editor-tips">
+
+        <div class="tip-icon">
+            💡
+        </div>
+
+        <div>
+
+            <h3>
+                Coding Tip
+            </h3>
+
+            <p>
+                Don't be afraid of errors! Errors are part
+                of becoming a better programmer. Read the
+                error message carefully and try to understand
+                what Python is telling you.
+            </p>
+
+        </div>
+
+    </section>
+
+
+</div>
+
+{% endblock %}

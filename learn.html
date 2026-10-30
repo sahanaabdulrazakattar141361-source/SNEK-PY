@@ -1,0 +1,589 @@
+{% extends "base.html" %}
+
+{% block title %}
+SNEK.PY — Learn Python
+{% endblock %}
+
+{% block content %}
+
+<div class="learn-page">
+
+    <!-- HERO -->
+
+    <section class="learn-hero">
+
+        <div>
+
+            <p class="eyebrow">
+                ✦ YOUR PYTHON JOURNEY
+            </p>
+
+            <h1>
+                Learn Python.
+                <span>Build Something Cool. 🚀</span>
+            </h1>
+
+            <p class="learn-subtitle">
+                Learn step-by-step, practice your skills,
+                complete challenges and level up your Python journey.
+            </p>
+
+        </div>
+
+        <div class="snake-decoration">
+            🐍
+        </div>
+
+    </section>
+
+
+    <!-- STATS -->
+
+    <section class="stats-grid">
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🔥
+            </div>
+
+            <div>
+                <p>STREAK</p>
+                <h2>3 Days</h2>
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                ⭐
+            </div>
+
+            <div>
+                <p>XP</p>
+                <h2>250 XP</h2>
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🏆
+            </div>
+
+            <div>
+                <p>LEVEL</p>
+                <h2>Level 2</h2>
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🎯
+            </div>
+
+            <div>
+                <p>COMPLETED</p>
+                <h2>4 / 8</h2>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- PROGRESS -->
+
+    <section class="progress-card">
+
+        <div class="progress-heading">
+
+            <div>
+
+                <p class="section-label">
+                    📈 YOUR PROGRESS
+                </p>
+
+                <h2>
+                    You're halfway there!
+                </h2>
+
+            </div>
+
+            <strong>
+                50%
+            </strong>
+
+        </div>
+
+
+        <div class="progress-bar">
+
+            <div class="progress-fill"></div>
+
+        </div>
+
+
+        <div class="progress-info">
+
+            <span>
+                4 of 8 topics completed
+            </span>
+
+            <span>
+                Keep going! 💪
+            </span>
+
+        </div>
+
+    </section>
+
+
+    <!-- PYTHON BASICS -->
+
+    <section class="learning-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <p class="section-label">
+                    🐍 PYTHON PATH
+                </p>
+
+                <h2>
+                    Python Basics
+                </h2>
+
+            </div>
+
+            <span class="topic-count">
+                8 Topics
+            </span>
+
+        </div>
+
+
+        <div class="lesson-grid">
+
+
+            <!-- ==================================================
+                 LESSON 1
+            =================================================== -->
+
+            <a
+                href="{{ url_for('lesson', lesson_id=1) }}"
+                class="lesson-card completed">
+
+                <div class="lesson-top">
+
+                    <span class="lesson-icon">
+                        🐍
+                    </span>
+
+                    <span class="status">
+                        ✓ Completed
+                    </span>
+
+                </div>
+
+
+                <h3>
+                    Introduction to Python
+                </h3>
+
+
+                <p>
+                    Discover what Python is, why it is popular
+                    and write your first Python program.
+                </p>
+
+
+                <div class="lesson-bottom">
+
+                    <span>
+                        ⭐ +20 XP
+                    </span>
+
+                    <span>
+                        ✓ Done
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <!-- ==================================================
+                 LESSON 2
+            =================================================== -->
+
+            <a
+                href="{{ url_for('lesson', lesson_id=2) }}"
+                class="lesson-card completed">
+
+                <div class="lesson-top">
+
+                    <span class="lesson-icon">
+                        📦
+                    </span>
+
+                    <span class="status">
+                        ✓ Completed
+                    </span>
+
+                </div>
+
+
+                <h3>
+                    Variables
+                </h3>
+
+
+                <p>
+                    Learn how Python stores information using
+                    variables and how to work with values.
+                </p>
+
+
+                <div class="lesson-bottom">
+
+                    <span>
+                        ⭐ +20 XP
+                    </span>
+
+                    <span>
+                        ✓ Done
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <!-- ==================================================
+                 LESSON 3
+            =================================================== -->
+
+            <a
+                href="{{ url_for('lesson', lesson_id=3) }}"
+                class="lesson-card active">
+
+                <div class="lesson-top">
+
+                    <span class="lesson-icon">
+                        🔢
+                    </span>
+
+                    <span class="status">
+                        START
+                    </span>
+
+                </div>
+
+
+                <h3>
+                    Data Types
+                </h3>
+
+
+                <p>
+                    Understand strings, integers, floats,
+                    booleans and other important Python types.
+                </p>
+
+
+                <div class="lesson-bottom">
+
+                    <span>
+                        ⭐ +20 XP
+                    </span>
+
+                    <span>
+                        Start →
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <!-- ==================================================
+                 LESSON 4
+            =================================================== -->
+
+            <a
+                href="{{ url_for('lesson', lesson_id=4) }}"
+                class="lesson-card active">
+
+                <div class="lesson-top">
+
+                    <span class="lesson-icon">
+                        ➕
+                    </span>
+
+                    <span class="status">
+                        START
+                    </span>
+
+                </div>
+
+
+                <h3>
+                    Operators
+                </h3>
+
+
+                <p>
+                    Master arithmetic, comparison and logical
+                    operators with practical examples.
+                </p>
+
+
+                <div class="lesson-bottom">
+
+                    <span>
+                        ⭐ +20 XP
+                    </span>
+
+                    <span>
+                        Start →
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <!-- ==================================================
+                 LESSON 5
+            =================================================== -->
+
+            <a
+                href="{{ url_for('lesson', lesson_id=5) }}"
+                class="lesson-card locked">
+
+                <div class="lesson-top">
+
+                    <span class="lesson-icon">
+                        🔀
+                    </span>
+
+                    <span class="status">
+                        🔒 LOCKED
+                    </span>
+
+                </div>
+
+
+                <h3>
+                    Conditions
+                </h3>
+
+
+                <p>
+                    Learn how Python makes decisions using
+                    if, elif and else.
+                </p>
+
+
+                <div class="lesson-bottom">
+
+                    <span>
+                        ⭐ +25 XP
+                    </span>
+
+                    <span>
+                        Complete previous topic
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <!-- ==================================================
+                 LESSON 6
+            =================================================== -->
+
+            <a
+                href="{{ url_for('lesson', lesson_id=6) }}"
+                class="lesson-card locked">
+
+                <div class="lesson-top">
+
+                    <span class="lesson-icon">
+                        🔁
+                    </span>
+
+                    <span class="status">
+                        🔒 LOCKED
+                    </span>
+
+                </div>
+
+
+                <h3>
+                    Loops
+                </h3>
+
+
+                <p>
+                    Learn how to repeat actions using
+                    for and while loops.
+                </p>
+
+
+                <div class="lesson-bottom">
+
+                    <span>
+                        ⭐ +30 XP
+                    </span>
+
+                    <span>
+                        Complete previous topic
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <!-- ==================================================
+                 LESSON 7
+            =================================================== -->
+
+            <a
+                href="{{ url_for('lesson', lesson_id=7) }}"
+                class="lesson-card locked">
+
+                <div class="lesson-top">
+
+                    <span class="lesson-icon">
+                        🧩
+                    </span>
+
+                    <span class="status">
+                        🔒 LOCKED
+                    </span>
+
+                </div>
+
+
+                <h3>
+                    Functions
+                </h3>
+
+
+                <p>
+                    Create reusable blocks of code and
+                    understand parameters and return values.
+                </p>
+
+
+                <div class="lesson-bottom">
+
+                    <span>
+                        ⭐ +40 XP
+                    </span>
+
+                    <span>
+                        Complete previous topic
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <!-- ==================================================
+                 LESSON 8
+            =================================================== -->
+
+            <a
+                href="{{ url_for('lesson', lesson_id=8) }}"
+                class="lesson-card locked">
+
+                <div class="lesson-top">
+
+                    <span class="lesson-icon">
+                        📋
+                    </span>
+
+                    <span class="status">
+                        🔒 LOCKED
+                    </span>
+
+                </div>
+
+
+                <h3>
+                    Lists & Dictionaries
+                </h3>
+
+
+                <p>
+                    Store and organize collections of data
+                    using lists and dictionaries.
+                </p>
+
+
+                <div class="lesson-bottom">
+
+                    <span>
+                        ⭐ +50 XP
+                    </span>
+
+                    <span>
+                        Complete previous topic
+                    </span>
+
+                </div>
+
+            </a>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- MOTIVATION -->
+
+    <section class="motivation-card">
+
+        <div class="motivation-icon">
+            💜
+        </div>
+
+
+        <div>
+
+            <p class="section-label">
+                A LITTLE REMINDER
+            </p>
+
+            <h2>
+                Don't compare your Chapter 1
+                to someone else's Chapter 20.
+            </h2>
+
+            <p>
+                Keep learning. Keep building.
+                Your Python journey is yours. 🐍
+            </p>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

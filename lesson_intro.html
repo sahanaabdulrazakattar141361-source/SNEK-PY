@@ -1,0 +1,2288 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ lesson.title }} — SNEK.PY
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+/* =========================================================
+   CHAPTER SYSTEM
+========================================================= */
+
+.chapter-panel {
+    display: none;
+    margin-top: 24px;
+    padding: 30px;
+    border-radius: 20px;
+    background: var(--card-bg, #15151d);
+    border: 1px solid var(--border-color, #2a2a36);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.20);
+    animation: chapterOpen 0.25s ease;
+}
+
+.chapter-panel.active {
+    display: block;
+}
+
+@keyframes chapterOpen {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.chapter-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.chapter-panel-header h2 {
+    margin: 8px 0 0;
+}
+
+.chapter-number {
+    min-width: 50px;
+    height: 50px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    background: rgba(139, 92, 246, 0.15);
+    color: #a78bfa;
+    font-size: 20px;
+}
+
+.chapter-content p {
+    line-height: 1.8;
+    margin-bottom: 18px;
+}
+
+.chapter-info-card {
+    margin-top: 22px;
+    padding: 20px;
+    border-radius: 15px;
+    background: rgba(139, 92, 246, 0.08);
+    border: 1px solid rgba(139, 92, 246, 0.18);
+}
+
+.chapter-info-card h3 {
+    margin-top: 0;
+}
+
+.chapter-info-card ul {
+    margin-bottom: 0;
+    padding-left: 22px;
+}
+
+.chapter-info-card li {
+    margin-bottom: 10px;
+    line-height: 1.6;
+}
+
+.chapter-code {
+    margin-top: 22px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #0b0b0f;
+    border: 1px solid #292936;
+}
+
+.chapter-code-header {
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    background: #171720;
+    color: #aaa;
+    font-size: 13px;
+}
+
+.chapter-code pre {
+    margin: 0;
+    padding: 20px;
+    overflow-x: auto;
+    color: #f5f5f5;
+    line-height: 1.7;
+}
+
+.close-chapter-button {
+    border: none;
+    border-radius: 10px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.08);
+    color: inherit;
+    margin-top: 20px;
+}
+
+.close-chapter-button:hover {
+    opacity: 0.8;
+}
+
+.clickable-topic {
+    cursor: pointer;
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        background 0.2s ease;
+}
+
+.clickable-topic:hover {
+    transform: translateY(-3px);
+    border-color: rgba(139, 92, 246, 0.55);
+}
+
+.click-topic-hint {
+    margin-top: 7px;
+    font-size: 12px;
+    color: #a78bfa;
+    font-weight: 700;
+}
+
+body.light .chapter-panel {
+    background: #ffffff;
+    border-color: #e5e7eb;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+}
+
+body.light .chapter-info-card {
+    background: #f5f3ff;
+    border-color: #ddd6fe;
+}
+
+body.light .chapter-code {
+    background: #111827;
+    border-color: #374151;
+}
+
+body.light .chapter-code-header {
+    background: #1f2937;
+}
+
+body.light .close-chapter-button {
+    background: #f3f4f6;
+    color: #111827;
+}
+
+@media (max-width: 700px) {
+
+    .chapter-panel {
+        padding: 20px;
+    }
+
+    .chapter-panel-header {
+        flex-direction: column;
+    }
+
+    .chapter-number {
+        display: none;
+    }
+}
+
+</style>
+
+
+<div class="lesson-page">
+
+
+    <!-- =====================================================
+         LESSON HEADER
+    ====================================================== -->
+
+    <section class="lesson-header">
+
+        <div>
+
+            <p class="lesson-tag">
+                LESSON {{ lesson.number }} • PYTHON BASICS
+            </p>
+
+            <h1>
+                {% if lesson.number == 1 %}
+                    🐍 Introduction to Python
+                {% elif lesson.number == 2 %}
+                    📦 Variables
+                {% elif lesson.number == 3 %}
+                    🔢 Data Types
+                {% elif lesson.number == 4 %}
+                    ➕ Operators
+                {% elif lesson.number == 5 %}
+                    🔀 Conditions
+                {% elif lesson.number == 6 %}
+                    🔁 Loops
+                {% elif lesson.number == 7 %}
+                    🧩 Functions
+                {% elif lesson.number == 8 %}
+                    📋 Lists & Dictionaries
+                {% else %}
+                    🐍 {{ lesson.title }}
+                {% endif %}
+            </h1>
+
+            <p class="lesson-intro-text">
+
+                {% if lesson.number == 1 %}
+                    Welcome to Python! Learn what Python is,
+                    why it is popular, and how to write your
+                    first Python program.
+
+                {% elif lesson.number == 2 %}
+                    Learn how Python stores information using
+                    variables and how you can work with
+                    different values.
+
+                {% elif lesson.number == 3 %}
+                    Understand the different types of data
+                    Python can work with.
+
+                {% elif lesson.number == 4 %}
+                    Learn how Python performs calculations,
+                    comparisons and logical operations.
+
+                {% elif lesson.number == 5 %}
+                    Learn how Python makes decisions using
+                    if, elif and else.
+
+                {% elif lesson.number == 6 %}
+                    Learn how to repeat actions using
+                    for and while loops.
+
+                {% elif lesson.number == 7 %}
+                    Learn how to create reusable blocks of
+                    code using functions.
+
+                {% elif lesson.number == 8 %}
+                    Learn how to store and organize collections
+                    of data using lists and dictionaries.
+
+                {% else %}
+                    {{ lesson.description }}
+                {% endif %}
+
+            </p>
+
+        </div>
+
+        <div class="lesson-number">
+            {{ "%02d"|format(lesson.number) }}
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         LESSON PROGRESS
+    ====================================================== -->
+
+    <section class="lesson-progress">
+
+        <div class="lesson-progress-top">
+
+            <span>
+                Lesson Progress
+            </span>
+
+            <strong>
+                {{ lesson.number }} / 8
+            </strong>
+
+        </div>
+
+        <div class="progress-bar">
+
+            <div
+                class="lesson-progress-fill"
+                style="width: {{ (lesson.number / 8) * 100 }}%;">
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         MAIN LAYOUT
+    ====================================================== -->
+
+    <div class="lesson-layout">
+
+
+        <div class="lesson-content">
+
+
+            <!-- =================================================
+                 WHAT YOU WILL LEARN
+            ================================================== -->
+
+            <section
+                class="lesson-section"
+                id="learn">
+
+                <span class="lesson-tag">
+                    01 • LEARNING
+                </span>
+
+                <h2>
+                    What you'll learn 📚
+                </h2>
+
+                <p>
+                    {{ lesson.description }}
+                </p>
+
+
+                <div class="feature-list">
+
+
+                    {% for topic in lesson.topics %}
+
+                    <div
+                        class="feature-item clickable-topic"
+                        tabindex="0"
+                        role="button"
+                        data-topic="{{ topic }}">
+
+                        <span>
+
+                            {% if topic == "What is Python?" %}
+                                🐍
+                            {% elif topic == "Easy Syntax" %}
+                                ✨
+                            {% elif topic == "Python Uses" %}
+                                🤖
+                            {% elif topic == "First Program" %}
+                                💻
+
+                            {% elif topic == "What is a Variable?" %}
+                                📦
+                            {% elif topic == "Creating Variables" %}
+                                ✍️
+                            {% elif topic == "Changing Values" %}
+                                🔄
+                            {% elif topic == "Using Variables" %}
+                                🧠
+
+                            {% elif topic == "Strings" %}
+                                🔤
+                            {% elif topic == "Integers" %}
+                                🔢
+                            {% elif topic == "Floats" %}
+                                🔣
+                            {% elif topic == "Booleans" %}
+                                ✅
+
+                            {% elif topic == "Arithmetic" %}
+                                ➕
+                            {% elif topic == "Comparison" %}
+                                ⚖️
+                            {% elif topic == "Logical Operators" %}
+                                🧠
+                            {% elif topic == "Calculations" %}
+                                📐
+
+                            {% elif topic == "if" %}
+                                ❓
+                            {% elif topic == "elif" %}
+                                🔀
+                            {% elif topic == "else" %}
+                                ➡️
+                            {% elif topic == "Decision Making" %}
+                                🧠
+
+                            {% elif topic == "for Loop" %}
+                                🔁
+                            {% elif topic == "while Loop" %}
+                                ⏳
+                            {% elif topic == "range()" %}
+                                🔢
+                            {% elif topic == "Automation" %}
+                                ⚡
+
+                            {% elif topic == "Create Functions" %}
+                                🧩
+                            {% elif topic == "Parameters" %}
+                                📥
+                            {% elif topic == "Return Values" %}
+                                📤
+                            {% elif topic == "Reusability" %}
+                                ♻️
+
+                            {% elif topic == "Lists" %}
+                                📋
+                            {% elif topic == "Dictionaries" %}
+                                🔑
+                            {% elif topic == "Access Data" %}
+                                🔍
+                            {% elif topic == "Modify Data" %}
+                                ✏️
+
+                            {% else %}
+                                🐍
+                            {% endif %}
+
+                        </span>
+
+                        <div>
+
+                            <h3>
+                                {{ topic }}
+                            </h3>
+
+                            <p>
+                                Click to open this chapter
+                                and learn the concept.
+                            </p>
+
+                            <div class="click-topic-hint">
+                                Click to learn more →
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- =================================================
+                     DYNAMIC CHAPTER
+                ================================================== -->
+
+                <div
+                    class="chapter-panel"
+                    id="chapterPanel"
+                    aria-live="polite">
+
+                    <div class="chapter-panel-header">
+
+                        <div>
+
+                            <span class="lesson-tag">
+                                PYTHON CHAPTER
+                            </span>
+
+                            <h2 id="chapterTitle">
+                                Chapter
+                            </h2>
+
+                        </div>
+
+                        <div class="chapter-number">
+                            📖
+                        </div>
+
+                    </div>
+
+
+                    <div class="chapter-content">
+
+                        <div id="chapterText"></div>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="close-chapter-button"
+                        id="closeChapterButton">
+
+                        ← Back to lesson
+
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 CONCEPT
+            ================================================== -->
+
+            <section
+                class="lesson-section"
+                id="explanation">
+
+                <span class="lesson-tag">
+                    02 • CONCEPT
+                </span>
+
+                <h2 id="conceptTitle">
+                    Understanding Python
+                </h2>
+
+                <div id="conceptContent"></div>
+
+            </section>
+
+
+            <!-- =================================================
+                 CODE
+            ================================================== -->
+
+            <section
+                class="lesson-section"
+                id="code">
+
+                <span class="lesson-tag">
+                    03 • CODE
+                </span>
+
+                <h2>
+                    Try the code 💻
+                </h2>
+
+                <p>
+                    Here is a simple Python example related
+                    to this lesson.
+                </p>
+
+                <div class="code-box">
+
+                    <div class="code-header">
+
+                        <span>
+                            🐍 Python
+                        </span>
+
+                        <span>
+                            example.py
+                        </span>
+
+                    </div>
+
+                    <pre><code id="mainCode"></code></pre>
+
+                </div>
+
+
+                <div class="output-box">
+
+                    <span>
+                        OUTPUT
+                    </span>
+
+                    <pre id="mainOutput"></pre>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 UNDERSTAND
+            ================================================== -->
+
+            <section
+                class="lesson-section"
+                id="understand">
+
+                <span class="lesson-tag">
+                    04 • UNDERSTAND
+                </span>
+
+                <h2>
+                    Understand the code 🧠
+                </h2>
+
+                <div
+                    class="explanation-card"
+                    id="codeExplanation">
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 PRACTICE
+            ================================================== -->
+
+            <section
+                class="lesson-section"
+                id="practice">
+
+                <span class="lesson-tag">
+                    05 • PRACTICE
+                </span>
+
+                <h2>
+                    Practice Challenge 🎯
+                </h2>
+
+                <p>
+                    Now it's your turn!
+                    Try this challenge to check your understanding.
+                </p>
+
+                <div class="practice-card">
+
+                    <div class="practice-icon">
+                        🚀
+                    </div>
+
+                    <div>
+
+                        <h2 id="challengeTitle">
+                            Practice Challenge
+                        </h2>
+
+                        <p id="challengeText">
+                        </p>
+
+                        <div class="challenge-example">
+
+                            Example:
+
+                            <code id="challengeExample">
+                            </code>
+
+                        </div>
+
+                        <button
+                            class="practice-button"
+                            type="button"
+                            id="practiceButton">
+
+                            Start Practice 🚀
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 RECAP
+            ================================================== -->
+
+            <section
+                class="lesson-section"
+                id="recap">
+
+                <span class="lesson-tag">
+                    06 • QUICK RECAP
+                </span>
+
+                <h2>
+                    What did you learn? 🎉
+                </h2>
+
+                <ul
+                    class="recap-list"
+                    id="recapList">
+                </ul>
+
+            </section>
+
+
+            <!-- =================================================
+                 COMPLETE LESSON
+            ================================================== -->
+
+            <div class="completion-card">
+
+                <div>
+
+                    <h2>
+                        Ready to complete this lesson? 🎉
+                    </h2>
+
+                    <p>
+
+                        Finish this lesson and earn
+
+                        <strong>
+                            <span id="xpAmount">20</span> XP
+                        </strong>.
+
+                    </p>
+
+                </div>
+
+                <button
+                    class="complete-button"
+                    id="completeLessonButton"
+                    type="button"
+                    data-lesson="{{ lesson.number }}"
+                    data-xp="20">
+
+                    Complete Lesson
+                    +20 XP
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             SIDEBAR
+        ====================================================== -->
+
+        <aside class="lesson-sidebar">
+
+
+            <div class="sidebar-card">
+
+                <h3>
+                    📖 Lesson Contents
+                </h3>
+
+                <a href="#learn">
+                    What you'll learn
+                </a>
+
+                <a href="#explanation">
+                    Concept
+                </a>
+
+                <a href="#code">
+                    Code Example
+                </a>
+
+                <a href="#understand">
+                    Understand the Code
+                </a>
+
+                <a href="#practice">
+                    Practice
+                </a>
+
+                <a href="#recap">
+                    Quick Recap
+                </a>
+
+            </div>
+
+
+            <div class="sidebar-xp">
+
+                <span>
+                    ⭐
+                </span>
+
+                <div>
+
+                    <strong>
+                        +<span id="sidebarXP">20</span> XP
+                    </strong>
+
+                    <p>
+                        Complete this lesson
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            {% if lesson.number < 8 %}
+
+            <div class="sidebar-card">
+
+                <h3>
+                    Next Lesson
+                </h3>
+
+                <a
+                    href="{{ url_for('lesson', lesson_id=lesson.number + 1) }}">
+
+                    {{ lesson.number + 1 }}.
+                    <span id="nextLessonTitle">
+                        Next Lesson
+                    </span>
+
+                    →
+
+                </a>
+
+            </div>
+
+            {% else %}
+
+            <div class="sidebar-card">
+
+                <h3>
+                    🎉 Final Lesson
+                </h3>
+
+                <a href="{{ url_for('learn') }}">
+
+                    Back to Python Path →
+
+                </a>
+
+            </div>
+
+            {% endif %}
+
+        </aside>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   SNEK.PY LESSON CONTENT
+========================================================= */
+
+const lessonNumber =
+    {{ lesson.number }};
+
+
+/* =========================================================
+   COMPLETE LESSON CONTENT
+========================================================= */
+
+const lessonData = {
+
+
+    1: {
+
+        concept:
+            "Python is a high-level, general-purpose programming language designed to be easy to read and write. It is widely used in AI, Machine Learning, Data Science, Web Development and Automation.",
+
+        code:
+`print("Hello, SNEK.PY!")`,
+
+        output:
+`Hello, SNEK.PY!`,
+
+        explanation: [
+            ["print()", "The print() function displays information on the screen."],
+            ['"Hello, SNEK.PY!"', "This is a string containing the message we want to display."],
+            ['print("...")', "Python executes this instruction and displays the message."]
+        ],
+
+        challengeTitle:
+            "Print your name",
+
+        challenge:
+            "Write a Python program that prints your name on the screen.",
+
+        example:
+            'print("Sahana")',
+
+        recap: [
+            "🐍 Python is beginner-friendly.",
+            "🤖 Python is used in AI, ML and Web Development.",
+            "💻 print() displays information.",
+            "✨ Text inside quotation marks is a string.",
+            "🚀 Practice is the best way to learn."
+        ],
+
+        xp: 20
+
+    },
+
+
+    2: {
+
+        concept:
+            "Variables allow programs to store information such as names, ages, scores and other values. Python creates variables using assignment.",
+
+        code:
+`name = "Sahana"
+age = 20
+
+print(name)
+print(age)`,
+
+        output:
+`Sahana
+20`,
+
+        explanation: [
+            ['name = "Sahana"', "Creates a variable called name and stores text."],
+            ["age = 20", "Creates a variable called age and stores the number 20."],
+            ["print(name)", "Displays the value stored in name."],
+            ["print(age)", "Displays the value stored in age."]
+        ],
+
+        challengeTitle:
+            "Create your own variables",
+
+        challenge:
+            "Create variables for your name and favorite number, then print both values.",
+
+        example:
+            'name = "Sahana"',
+
+        recap: [
+            "📦 Variables store information.",
+            "✍️ Variables use the assignment operator =.",
+            "🔤 Text can be stored in variables.",
+            "🔢 Numbers can be stored in variables.",
+            "🔄 Variable values can change."
+        ],
+
+        xp: 20
+
+    },
+
+
+    3: {
+
+        concept:
+            "Python works with different kinds of data. The most common beginner data types are strings, integers, floats and booleans.",
+
+        code:
+`name = "Sahana"
+age = 20
+height = 5.4
+student = True
+
+print(type(name))
+print(type(age))
+print(type(height))
+print(type(student))`,
+
+        output:
+`<class 'str'>
+<class 'int'>
+<class 'float'>
+<class 'bool'>`,
+
+        explanation: [
+            ['"Sahana"', "This is a string because it contains text."],
+            ["20", "This is an integer because it is a whole number."],
+            ["5.4", "This is a float because it contains a decimal value."],
+            ["True", "This is a boolean value."]
+        ],
+
+        challengeTitle:
+            "Identify the data types",
+
+        challenge:
+            "Create one string, one integer, one float and one boolean variable and print their types.",
+
+        example:
+            "score = 95",
+
+        recap: [
+            "🔤 str is used for text.",
+            "🔢 int is used for whole numbers.",
+            "🔣 float is used for decimal numbers.",
+            "✅ bool represents True or False.",
+            "🧠 type() can check a value's type."
+        ],
+
+        xp: 20
+
+    },
+
+
+    4: {
+
+        concept:
+            "Operators allow Python programs to perform calculations and compare values. Arithmetic, comparison and logical operators are important building blocks.",
+
+        code:
+`a = 10
+b = 3
+
+print(a + b)
+print(a - b)
+print(a * b)
+print(a > b)`,
+
+        output:
+`13
+7
+30
+True`,
+
+        explanation: [
+            ["a + b", "Adds the values stored in a and b."],
+            ["a - b", "Subtracts b from a."],
+            ["a * b", "Multiplies a and b."],
+            ["a > b", "Checks whether a is greater than b."]
+        ],
+
+        challengeTitle:
+            "Build a mini calculator",
+
+        challenge:
+            "Create two numbers and calculate their sum, difference and multiplication.",
+
+        example:
+            "a = 10",
+
+        recap: [
+            "➕ + performs addition.",
+            "➖ - performs subtraction.",
+            "✖️ * performs multiplication.",
+            "➗ / performs division.",
+            "⚖️ Comparisons produce True or False."
+        ],
+
+        xp: 20
+
+    },
+
+
+    5: {
+
+        concept:
+            "Conditions allow a program to make decisions depending on whether something is True or False. Python uses if, elif and else.",
+
+        code:
+`age = 20
+
+if age >= 18:
+    print("You are an adult.")
+else:
+    print("You are a minor.")`,
+
+        output:
+`You are an adult.`,
+
+        explanation: [
+            ["age >= 18", "Checks whether the age is at least 18."],
+            ["if", "Runs the indented code when the condition is True."],
+            ["else", "Runs when the if condition is False."]
+        ],
+
+        challengeTitle:
+            "Check a number",
+
+        challenge:
+            "Write a program that checks whether a number is positive, negative or zero.",
+
+        example:
+            "number = 10",
+
+        recap: [
+            "❓ if checks a condition.",
+            "🔀 elif checks another condition.",
+            "➡️ else runs when previous conditions are false.",
+            "🧠 Conditions help programs make decisions.",
+            "📌 Python uses indentation for code blocks."
+        ],
+
+        xp: 25
+
+    },
+
+
+    6: {
+
+        concept:
+            "Loops allow programs to repeat code without writing the same instructions again and again. Python provides for and while loops.",
+
+        code:
+`for number in range(1, 6):
+    print(number)`,
+
+        output:
+`1
+2
+3
+4
+5`,
+
+        explanation: [
+            ["for", "Starts a for loop."],
+            ["number", "Stores the current value during each iteration."],
+            ["range(1, 6)", "Produces numbers from 1 up to, but not including, 6."],
+            ["print(number)", "Displays the current number."]
+        ],
+
+        challengeTitle:
+            "Print numbers",
+
+        challenge:
+            "Write a loop that prints the numbers from 1 to 10.",
+
+        example:
+            "for i in range(1, 11):",
+
+        recap: [
+            "🔁 Loops repeat code.",
+            "🔢 for loops iterate over sequences.",
+            "⏳ while loops repeat while a condition is True.",
+            "📊 range() generates number sequences.",
+            "⚡ Loops reduce repetitive code."
+        ],
+
+        xp: 30
+
+    },
+
+
+    7: {
+
+        concept:
+            "Functions are reusable blocks of code. They help organize programs and allow the same instructions to be used multiple times.",
+
+        code:
+`def greet(name):
+    return "Hello " + name
+
+message = greet("Sahana")
+print(message)`,
+
+        output:
+`Hello Sahana`,
+
+        explanation: [
+            ["def greet(name):", "Defines a function named greet with a parameter."],
+            ["return", "Sends a value back from the function."],
+            ['greet("Sahana")', "Calls the function with Sahana as the argument."],
+            ["print(message)", "Displays the returned value."]
+        ],
+
+        challengeTitle:
+            "Create a greeting function",
+
+        challenge:
+            "Create a function that accepts a person's name and returns a greeting message.",
+
+        example:
+            "def greet(name):",
+
+        recap: [
+            "🧩 Functions are reusable blocks of code.",
+            "📥 Parameters allow functions to receive information.",
+            "📤 return sends a value back.",
+            "♻️ Functions reduce repeated code.",
+            "🚀 Functions organize programs."
+        ],
+
+        xp: 40
+
+    },
+
+
+    8: {
+
+        concept:
+            "Lists and dictionaries are powerful Python data structures. Lists store ordered values, while dictionaries store key-value pairs.",
+
+        code:
+`languages = ["Python", "Java", "C++"]
+
+student = {
+    "name": "Sahana",
+    "age": 20
+}
+
+print(languages[0])
+print(student["name"])`,
+
+        output:
+`Python
+Sahana`,
+
+        explanation: [
+            ['["Python", "Java", "C++"]', "Creates a list containing programming languages."],
+            ["languages[0]", "Accesses the first item because indexes start at 0."],
+            ['{"name": "Sahana", "age": 20}', "Creates a dictionary using key-value pairs."],
+            ['student["name"]', "Accesses the value associated with the name key."]
+        ],
+
+        challengeTitle:
+            "Create your own collection",
+
+        challenge:
+            "Create a list containing three favorite foods and a dictionary containing your name and age.",
+
+        example:
+            'foods = ["Pizza", "Momos", "Pasta"]',
+
+        recap: [
+            "📋 Lists store multiple ordered values.",
+            "🔢 List indexes start from 0.",
+            "🔑 Dictionaries store key-value pairs.",
+            "🔍 Values can be accessed using indexes or keys.",
+            "🚀 Collections help organize data."
+        ],
+
+        xp: 50
+
+    }
+
+};
+
+
+/* =========================================================
+   CHAPTER DATA
+========================================================= */
+
+const chapters = {
+
+    "What is Python?": {
+        title: "What is Python? 🐍",
+        text: [
+            "Python is a high-level, general-purpose programming language designed to be easy to read, understand and write.",
+            "It uses clean and readable syntax, which makes it especially friendly for people who are learning programming for the first time.",
+            "Python is used by students, developers, researchers and companies to build many different types of applications."
+        ],
+        points: [
+            "Python is a high-level programming language.",
+            "Python has simple and readable syntax.",
+            "Python is used for many different types of software.",
+            "Python is popular with beginners."
+        ],
+        code: 'print("Hello, SNEK.PY!")',
+        task: "Try changing the message inside print() and run the program."
+    },
+
+    "Easy Syntax": {
+        title: "Python's Easy Syntax ✨",
+        text: [
+            "Python was designed with readability in mind.",
+            "Python uses indentation to organize blocks of code.",
+            "Because the syntax is straightforward, beginners can focus more on programming concepts."
+        ],
+        points: [
+            "Python code is generally concise and readable.",
+            "Indentation is important in Python.",
+            "Many tasks require only a small amount of code.",
+            "Readable code is easier to maintain."
+        ],
+        code: 'if age >= 18:\n    print("Adult")',
+        task: "Try changing the condition and see how the output changes."
+    },
+
+    "Python Uses": {
+        title: "Where is Python Used? 🤖",
+        text: [
+            "Python is a general-purpose language, so it can be used in many different fields.",
+            "Python is widely used in Artificial Intelligence, Machine Learning, Data Science, Web Development and Automation.",
+            "Learning Python gives students a foundation for many technology careers."
+        ],
+        points: [
+            "Artificial Intelligence and Machine Learning",
+            "Data Science and data analysis",
+            "Web development",
+            "Automation and scripting",
+            "Education"
+        ],
+        code: 'numbers = [1, 2, 3, 4, 5]\n\nprint(sum(numbers))',
+        task: "Think of one real-world problem that could be automated using Python."
+    },
+
+    "First Program": {
+        title: "Your First Python Program 💻",
+        text: [
+            "The print() function is one of the first Python functions beginners learn.",
+            "It allows a program to display information on the screen.",
+            "Text written inside quotation marks is called a string."
+        ],
+        points: [
+            "print() displays information.",
+            "Text is normally written inside quotation marks.",
+            "Python executes instructions in order.",
+            "You can experiment by changing the text."
+        ],
+        code: 'print("Hello, World!")',
+        task: "Change the program so that it prints your name."
+    },
+
+
+    "What is a Variable?": {
+        title: "What is a Variable? 📦",
+        text: [
+            "A variable is a name that refers to a value stored by a program.",
+            "Variables allow us to save information and use that information later.",
+            "A student's name, age or score can all be stored using variables."
+        ],
+        points: [
+            "Variables store information.",
+            "A variable has a name.",
+            "The stored value can be used later.",
+            "Variables make programs easier to work with."
+        ],
+        code: 'name = "Sahana"\nage = 20\n\nprint(name)\nprint(age)',
+        task: "Create variables for your name and age."
+    },
+
+    "Creating Variables": {
+        title: "Creating Variables ✍️",
+        text: [
+            "Python variables are created by assigning a value to a name.",
+            "The equals sign is used as the assignment operator.",
+            "Python automatically determines the type of the value."
+        ],
+        points: [
+            "Use meaningful variable names.",
+            "Use = to assign a value.",
+            "Variables can store text or numbers.",
+            "Python does not require a separate type declaration."
+        ],
+        code: 'name = "Sahana"\nscore = 95\npassed = True',
+        task: "Create three variables: name, score and passed."
+    },
+
+    "Changing Values": {
+        title: "Changing Variable Values 🔄",
+        text: [
+            "A variable's value can be changed during program execution.",
+            "You simply assign a new value to the same variable.",
+            "The variable then refers to the new value."
+        ],
+        points: [
+            "Variables are not permanently fixed.",
+            "Assigning a new value changes the variable.",
+            "The latest assigned value is used.",
+            "This is useful when information changes."
+        ],
+        code: 'score = 50\nprint(score)\n\nscore = 90\nprint(score)',
+        task: "Create a score variable and update it."
+    },
+
+    "Using Variables": {
+        title: "Using Variables 🧠",
+        text: [
+            "Variables can be used in calculations, messages and expressions.",
+            "They allow programs to work with changing information instead of fixed values."
+        ],
+        points: [
+            "Variables can be used in calculations.",
+            "Variables can be printed.",
+            "Variables can be combined with other values.",
+            "Variables make programs dynamic."
+        ],
+        code: 'price = 100\nquantity = 3\n\ntotal = price * quantity\nprint(total)',
+        task: "Create price and quantity variables and calculate a total."
+    },
+
+
+    "Strings": {
+        title: "Strings 🔤",
+        text: [
+            "A string is a sequence of characters used to represent text.",
+            "Strings are commonly written inside single or double quotes.",
+            "Names, messages and sentences can all be stored as strings."
+        ],
+        points: [
+            "Strings represent text.",
+            "Strings can contain letters and symbols.",
+            "Quotation marks define strings.",
+            "Strings can be stored in variables."
+        ],
+        code: 'name = "Sahana"\n\nprint(name)\nprint("Welcome to SNEK.PY")',
+        task: "Create a string containing your favorite programming language."
+    },
+
+    "Integers": {
+        title: "Integers 🔢",
+        text: [
+            "An integer is a whole number without a decimal part.",
+            "Integers can be positive, negative or zero.",
+            "They are commonly used for counting, ages and scores."
+        ],
+        points: [
+            "Examples include 10, 0 and -5.",
+            "Integers do not contain decimal points.",
+            "Integers can be used in calculations."
+        ],
+        code: 'age = 20\nscore = 95\n\nprint(age + score)',
+        task: "Create two integer variables and calculate their sum."
+    },
+
+    "Floats": {
+        title: "Floating-Point Numbers 🔣",
+        text: [
+            "A float is a number that contains a decimal value.",
+            "Floats are useful for measurements, prices and averages."
+        ],
+        points: [
+            "Floats contain decimal values.",
+            "Examples include 5.4, 10.5 and 3.14.",
+            "Floats can be used in mathematical expressions."
+        ],
+        code: 'height = 5.4\nprice = 99.50\n\nprint(height)\nprint(price)',
+        task: "Create a float variable for the price of an item."
+    },
+
+    "Booleans": {
+        title: "Booleans ✅",
+        text: [
+            "A boolean represents one of two logical values: True or False.",
+            "Booleans are important when programs need to make decisions."
+        ],
+        points: [
+            "True represents a true condition.",
+            "False represents a false condition.",
+            "Booleans are often produced by comparisons.",
+            "Conditions use boolean results."
+        ],
+        code: 'age = 20\nis_adult = age >= 18\n\nprint(is_adult)',
+        task: "Create a boolean that checks whether a number is greater than 10."
+    },
+
+
+    "Arithmetic": {
+        title: "Arithmetic Operators ➕",
+        text: [
+            "Arithmetic operators allow Python programs to perform mathematical calculations.",
+            "Common operators include addition, subtraction, multiplication and division."
+        ],
+        points: [
+            "+ performs addition.",
+            "- performs subtraction.",
+            "* performs multiplication.",
+            "/ performs division.",
+            "% gives the remainder."
+        ],
+        code: 'a = 10\nb = 3\n\nprint(a + b)\nprint(a - b)\nprint(a * b)\nprint(a / b)',
+        task: "Create two numbers and perform four arithmetic operations."
+    },
+
+    "Comparison": {
+        title: "Comparison Operators ⚖️",
+        text: [
+            "Comparison operators compare values.",
+            "The result of a comparison is True or False.",
+            "They are useful when building conditions."
+        ],
+        points: [
+            "== checks equality.",
+            "!= checks difference.",
+            "> checks greater than.",
+            "< checks less than.",
+            ">= and <= compare values including equality."
+        ],
+        code: 'a = 10\nb = 3\n\nprint(a > b)\nprint(a == b)',
+        task: "Compare two numbers and print the results."
+    },
+
+    "Logical Operators": {
+        title: "Logical Operators 🧠",
+        text: [
+            "Logical operators allow multiple conditions to be combined or reversed.",
+            "The main logical operators are and, or and not."
+        ],
+        points: [
+            "and requires both conditions to be true.",
+            "or requires at least one condition to be true.",
+            "not reverses a boolean result."
+        ],
+        code: 'age = 20\nstudent = True\n\nprint(age >= 18 and student)',
+        task: "Create two boolean conditions and combine them using and."
+    },
+
+    "Calculations": {
+        title: "Building Calculations 📐",
+        text: [
+            "Operators can be combined to create useful calculations.",
+            "Variables allow the same calculation structure to work with different values."
+        ],
+        points: [
+            "Store values in variables.",
+            "Use operators to calculate results.",
+            "Store calculated results.",
+            "Print the final result."
+        ],
+        code: 'price = 100\nquantity = 4\n\ntotal = price * quantity\nprint(total)',
+        task: "Build a simple shopping bill using price and quantity."
+    },
+
+
+    "if": {
+        title: "The if Statement ❓",
+        text: [
+            "The if statement allows Python to execute code only when a condition is True.",
+            "It is one of the most important tools for decision-making."
+        ],
+        points: [
+            "if checks a condition.",
+            "Indented code runs when the condition is True.",
+            "Conditions usually produce True or False."
+        ],
+        code: 'age = 20\n\nif age >= 18:\n    print("You are an adult.")',
+        task: "Write an if statement that checks whether a number is positive."
+    },
+
+    "elif": {
+        title: "The elif Statement 🔀",
+        text: [
+            "elif means 'else if'.",
+            "It allows a program to check another condition when an earlier condition is False."
+        ],
+        points: [
+            "elif provides an additional condition.",
+            "It is checked after the previous condition is False.",
+            "Multiple elif statements can be used."
+        ],
+        code: 'score = 75\n\nif score >= 90:\n    print("A")\nelif score >= 60:\n    print("B")',
+        task: "Create a grading program using if and elif."
+    },
+
+    "else": {
+        title: "The else Statement ➡️",
+        text: [
+            "The else statement provides code to run when none of the previous conditions are True.",
+            "It gives a program a default action."
+        ],
+        points: [
+            "else does not have its own condition.",
+            "It runs when previous conditions are False.",
+            "else is optional."
+        ],
+        code: 'age = 15\n\nif age >= 18:\n    print("Adult")\nelse:\n    print("Minor")',
+        task: "Check whether a person is eligible to vote."
+    },
+
+    "Decision Making": {
+        title: "Decision Making 🧠",
+        text: [
+            "Decision-making allows programs to respond differently depending on the situation.",
+            "if, elif and else can be combined with comparison and logical operators."
+        ],
+        points: [
+            "Programs can react to different inputs.",
+            "Conditions control which code runs.",
+            "Decision-making is used in real applications."
+        ],
+        code: 'temperature = 30\n\nif temperature > 35:\n    print("Very hot")\nelif temperature > 25:\n    print("Warm")\nelse:\n    print("Cool")',
+        task: "Create a program that gives a message based on a person's score."
+    },
+
+
+    "for Loop": {
+        title: "for Loops 🔁",
+        text: [
+            "A for loop repeats a block of code for each item in a sequence.",
+            "It is commonly used when processing a known sequence of values."
+        ],
+        points: [
+            "for starts the loop.",
+            "A loop variable receives each value.",
+            "Indented code runs for each item."
+        ],
+        code: 'for number in range(1, 6):\n    print(number)',
+        task: "Write a for loop that prints numbers from 1 to 10."
+    },
+
+    "while Loop": {
+        title: "while Loops ⏳",
+        text: [
+            "A while loop repeats code as long as a condition remains True.",
+            "It is useful when the number of repetitions depends on a condition."
+        ],
+        points: [
+            "while checks a condition.",
+            "The loop continues while the condition is True.",
+            "The condition should eventually become False."
+        ],
+        code: 'count = 1\n\nwhile count <= 5:\n    print(count)\n    count += 1',
+        task: "Create a while loop that counts from 1 to 10."
+    },
+
+    "range()": {
+        title: "The range() Function 🔢",
+        text: [
+            "The range() function generates a sequence of numbers.",
+            "It is commonly used with for loops.",
+            "The ending value is not included."
+        ],
+        points: [
+            "range(5) produces 0 through 4.",
+            "range(1, 6) produces 1 through 5.",
+            "range() is useful for counting loops."
+        ],
+        code: 'for i in range(1, 6):\n    print(i)',
+        task: "Use range() to print the numbers from 5 to 15."
+    },
+
+    "Automation": {
+        title: "Using Loops for Automation ⚡",
+        text: [
+            "Loops are useful when the same task needs to be performed many times.",
+            "Instead of repeating instructions manually, a loop can automate the work."
+        ],
+        points: [
+            "Loops reduce repetitive code.",
+            "Loops can process many items.",
+            "Automation makes programs more efficient."
+        ],
+        code: 'names = ["A", "B", "C"]\n\nfor name in names:\n    print("Hello", name)',
+        task: "Create a list of names and use a loop to greet each person."
+    },
+
+
+    "Create Functions": {
+        title: "Creating Functions 🧩",
+        text: [
+            "A function is a reusable block of code designed to perform a particular task.",
+            "Functions help divide large programs into smaller pieces."
+        ],
+        points: [
+            "def defines a function.",
+            "A function gets a name.",
+            "The function body is indented.",
+            "Functions can be called whenever needed."
+        ],
+        code: 'def greet():\n    print("Hello!")\n\ngreet()',
+        task: "Create a function that prints your favorite message."
+    },
+
+    "Parameters": {
+        title: "Function Parameters 📥",
+        text: [
+            "Parameters allow information to be passed into a function.",
+            "They make functions flexible because the same function can work with different values."
+        ],
+        points: [
+            "Parameters are written inside the function definition.",
+            "Arguments are actual values passed to a function.",
+            "Functions can have multiple parameters."
+        ],
+        code: 'def greet(name):\n    print("Hello", name)\n\ngreet("Sahana")',
+        task: "Create a function that accepts a person's name."
+    },
+
+    "Return Values": {
+        title: "Return Values 📤",
+        text: [
+            "A function can send a result back using return.",
+            "The returned value can be stored or used in another expression."
+        ],
+        points: [
+            "return sends a value back.",
+            "The returned value can be stored.",
+            "A function can return a calculation."
+        ],
+        code: 'def add(a, b):\n    return a + b\n\nresult = add(5, 3)\nprint(result)',
+        task: "Create a function that returns the square of a number."
+    },
+
+    "Reusability": {
+        title: "Code Reusability ♻️",
+        text: [
+            "One of the biggest advantages of functions is code reuse.",
+            "Instead of writing the same instructions multiple times, define a function once and call it whenever needed."
+        ],
+        points: [
+            "Functions reduce duplicate code.",
+            "Functions make programs easier to maintain.",
+            "Functions make programs more organized."
+        ],
+        code: 'def welcome(name):\n    return "Welcome " + name\n\nprint(welcome("Sahana"))\nprint(welcome("Student"))',
+        task: "Create a reusable function for calculating the area of a rectangle."
+    },
+
+
+    "Lists": {
+        title: "Lists 📋",
+        text: [
+            "A list stores multiple values in an ordered collection.",
+            "Lists can contain strings, numbers and other Python objects.",
+            "Lists are written using square brackets."
+        ],
+        points: [
+            "Lists are ordered.",
+            "Lists can contain multiple values.",
+            "List indexes start from 0.",
+            "Lists can be modified."
+        ],
+        code: 'languages = ["Python", "Java", "C++"]\n\nprint(languages[0])',
+        task: "Create a list containing three of your favorite foods."
+    },
+
+    "Dictionaries": {
+        title: "Dictionaries 🔑",
+        text: [
+            "A dictionary stores information using key-value pairs.",
+            "Dictionaries are useful when each value has a meaningful name."
+        ],
+        points: [
+            "Dictionaries use curly braces.",
+            "Data is stored using key-value pairs.",
+            "Keys are used to access values.",
+            "Dictionaries are useful for structured information."
+        ],
+        code: 'student = {\n    "name": "Sahana",\n    "age": 20\n}\n\nprint(student["name"])',
+        task: "Create a dictionary containing your name, age and favorite language."
+    },
+
+    "Access Data": {
+        title: "Accessing Data 🔍",
+        text: [
+            "Python provides simple ways to access individual values from collections.",
+            "Lists use indexes, while dictionaries use keys."
+        ],
+        points: [
+            "List indexes start at 0.",
+            "Dictionary values are accessed using keys.",
+            "Correct access syntax is important."
+        ],
+        code: 'foods = ["Pizza", "Momos", "Pasta"]\n\nprint(foods[0])',
+        task: "Create a list and print its second item."
+    },
+
+    "Modify Data": {
+        title: "Modifying Collection Data ✏️",
+        text: [
+            "Lists can be changed after they are created.",
+            "You can add, remove and update values.",
+            "Dictionary values can also be updated."
+        ],
+        points: [
+            "append() adds an item.",
+            "remove() removes an item.",
+            "List items can be changed using indexes.",
+            "Dictionary values can be updated using keys."
+        ],
+        code: 'foods = ["Pizza", "Momos"]\n\nfoods.append("Pasta")\n\nprint(foods)',
+        task: "Create a list and add one more item using append()."
+    }
+
+};
+
+
+/* =========================================================
+   HTML ESCAPE
+========================================================= */
+
+function escapeHTML(value) {
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/* =========================================================
+   LOAD MAIN LESSON
+========================================================= */
+
+const currentData =
+    lessonData[lessonNumber];
+
+
+if (currentData) {
+
+    document.getElementById(
+        "conceptTitle"
+    ).textContent =
+        lessonNumber === 1
+            ? "What is Python?"
+            : lessonNumber === 2
+            ? "What are Variables?"
+            : lessonNumber === 3
+            ? "Understanding Data Types"
+            : lessonNumber === 4
+            ? "Working with Operators"
+            : lessonNumber === 5
+            ? "Making Decisions with if"
+            : lessonNumber === 6
+            ? "Repeating Code with Loops"
+            : lessonNumber === 7
+            ? "Building Reusable Functions"
+            : "Organizing Data";
+
+
+    document.getElementById(
+        "conceptContent"
+    ).innerHTML =
+        `<p>${escapeHTML(currentData.concept)}</p>`;
+
+
+    document.getElementById(
+        "mainCode"
+    ).textContent =
+        currentData.code;
+
+
+    document.getElementById(
+        "mainOutput"
+    ).textContent =
+        currentData.output;
+
+
+    const explanation =
+        document.getElementById(
+            "codeExplanation"
+        );
+
+
+    currentData.explanation.forEach(
+        function (item) {
+
+            const row =
+                document.createElement("div");
+
+            row.className =
+                "explanation-row";
+
+            row.innerHTML =
+                `<code>${escapeHTML(item[0])}</code>
+                 <p>${escapeHTML(item[1])}</p>`;
+
+            explanation.appendChild(row);
+
+        }
+    );
+
+
+    document.getElementById(
+        "challengeTitle"
+    ).textContent =
+        currentData.challengeTitle;
+
+
+    document.getElementById(
+        "challengeText"
+    ).textContent =
+        currentData.challenge;
+
+
+    document.getElementById(
+        "challengeExample"
+    ).textContent =
+        currentData.example;
+
+
+    document.getElementById(
+        "xpAmount"
+    ).textContent =
+        currentData.xp;
+
+
+    document.getElementById(
+        "sidebarXP"
+    ).textContent =
+        currentData.xp;
+
+
+    document.getElementById(
+        "completeLessonButton"
+    ).setAttribute(
+        "data-xp",
+        currentData.xp
+    );
+
+
+    const recapList =
+        document.getElementById(
+            "recapList"
+        );
+
+
+    currentData.recap.forEach(
+        function (item) {
+
+            const li =
+                document.createElement("li");
+
+            li.textContent =
+                item;
+
+            recapList.appendChild(li);
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   NEXT LESSON TITLE
+========================================================= */
+
+const nextTitles = {
+
+    1: "Variables",
+    2: "Data Types",
+    3: "Operators",
+    4: "Conditions",
+    5: "Loops",
+    6: "Functions",
+    7: "Lists & Dictionaries"
+};
+
+
+const nextTitle =
+    document.getElementById(
+        "nextLessonTitle"
+    );
+
+
+if (nextTitle && nextTitles[lessonNumber]) {
+
+    nextTitle.textContent =
+        nextTitles[lessonNumber];
+
+}
+
+
+/* =========================================================
+   CHAPTER OPEN
+========================================================= */
+
+const topicCards =
+    document.querySelectorAll(
+        ".clickable-topic"
+    );
+
+
+const chapterPanel =
+    document.getElementById(
+        "chapterPanel"
+    );
+
+
+const chapterTitle =
+    document.getElementById(
+        "chapterTitle"
+    );
+
+
+const chapterText =
+    document.getElementById(
+        "chapterText"
+    );
+
+
+const closeChapterButton =
+    document.getElementById(
+        "closeChapterButton"
+    );
+
+
+function openChapter(topic) {
+
+    const data =
+        chapters[topic];
+
+
+    if (!data) {
+
+        chapterTitle.textContent =
+            topic;
+
+        chapterText.innerHTML =
+            `<p>
+                This chapter is part of the
+                current Python lesson.
+            </p>`;
+
+    } else {
+
+        chapterTitle.textContent =
+            data.title;
+
+
+        let html = "";
+
+
+        data.text.forEach(
+            function (paragraph) {
+
+                html +=
+                    `<p>
+                        ${escapeHTML(paragraph)}
+                    </p>`;
+
+            }
+        );
+
+
+        html +=
+            `<div class="chapter-info-card">
+
+                <h3>
+                    💡 Key Points
+                </h3>
+
+                <ul>`;
+
+
+        data.points.forEach(
+            function (point) {
+
+                html +=
+                    `<li>
+                        ${escapeHTML(point)}
+                    </li>`;
+
+            }
+        );
+
+
+        html +=
+                `</ul>
+            </div>`;
+
+
+        html +=
+            `<div class="chapter-code">
+
+                <div class="chapter-code-header">
+
+                    <span>
+                        🐍 Python
+                    </span>
+
+                    <span>
+                        Example
+                    </span>
+
+                </div>
+
+                <pre><code>
+${escapeHTML(data.code)}
+                </code></pre>
+
+            </div>`;
+
+
+        html +=
+            `<div class="chapter-info-card">
+
+                <h3>
+                    🎯 Try It Yourself
+                </h3>
+
+                <p>
+                    ${escapeHTML(data.task)}
+                </p>
+
+            </div>`;
+
+
+        chapterText.innerHTML =
+            html;
+
+    }
+
+
+    chapterPanel.classList.add(
+        "active"
+    );
+
+
+    chapterPanel.scrollIntoView({
+
+        behavior: "smooth",
+
+        block: "start"
+
+    });
+
+}
+
+
+/* =========================================================
+   TOPIC CLICK
+========================================================= */
+
+topicCards.forEach(
+    function (card) {
+
+        card.addEventListener(
+            "click",
+            function () {
+
+                const topic =
+                    card.getAttribute(
+                        "data-topic"
+                    );
+
+                openChapter(topic);
+
+            }
+        );
+
+
+        card.addEventListener(
+            "keydown",
+            function (event) {
+
+                if (
+                    event.key === "Enter" ||
+                    event.key === " "
+                ) {
+
+                    event.preventDefault();
+
+                    const topic =
+                        card.getAttribute(
+                            "data-topic"
+                        );
+
+                    openChapter(topic);
+
+                }
+
+            }
+        );
+
+    }
+);
+
+
+/* =========================================================
+   CLOSE CHAPTER
+========================================================= */
+
+if (closeChapterButton) {
+
+    closeChapterButton.addEventListener(
+        "click",
+        function () {
+
+            chapterPanel.classList.remove(
+                "active"
+            );
+
+
+            document
+                .getElementById("learn")
+                .scrollIntoView({
+
+                    behavior: "smooth",
+
+                    block: "start"
+
+                });
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   PRACTICE
+========================================================= */
+
+document
+    .getElementById("practiceButton")
+    .addEventListener(
+        "click",
+        function () {
+
+            window.location.href =
+                "/practice/" + lessonNumber;
+
+        }
+    );
+
+
+/* =========================================================
+   COMPLETE LESSON
+========================================================= */
+
+const completeButton =
+    document.getElementById(
+        "completeLessonButton"
+    );
+
+
+if (completeButton) {
+
+    const number =
+        completeButton.getAttribute(
+            "data-lesson"
+        );
+
+
+    const xp =
+        completeButton.getAttribute(
+            "data-xp"
+        );
+
+
+    const storageKey =
+        "snekLessonCompleted_" + number;
+
+
+    function showCompleted() {
+
+        completeButton.textContent =
+            "✓ Lesson Completed";
+
+        completeButton.disabled =
+            true;
+
+        completeButton.style.cursor =
+            "default";
+
+    }
+
+
+    if (
+        localStorage.getItem(
+            storageKey
+        ) === "true"
+    ) {
+
+        showCompleted();
+
+    }
+
+
+    completeButton.addEventListener(
+        "click",
+        function () {
+
+            if (
+                localStorage.getItem(
+                    storageKey
+                ) === "true"
+            ) {
+
+                return;
+
+            }
+
+
+            localStorage.setItem(
+                storageKey,
+                "true"
+            );
+
+
+            localStorage.setItem(
+                "snekLastXP",
+                xp
+            );
+
+
+            showCompleted();
+
+
+            alert(
+                "🎉 Lesson completed!\n\n" +
+                "+" +
+                xp +
+                " XP earned! 🐍"
+            );
+
+        }
+    );
+
+}
+
+</script>
+
+{% endblock %}

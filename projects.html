@@ -1,0 +1,2413 @@
+{% extends "base.html" %}
+
+{% block title %}
+SNEK.PY — Projects
+{% endblock %}
+
+{% block content %}
+
+<style>
+    /* =========================================================
+       PROJECTS PAGE
+       ========================================================= */
+
+    .projects-page {
+        min-height: calc(100vh - 80px);
+        padding: 40px 5%;
+        background: var(--bg-primary, #0b0b0f);
+    }
+
+    /* ---------- HERO ---------- */
+
+    .projects-hero {
+        max-width: 1200px;
+        margin: 0 auto 35px;
+        padding: 42px;
+        border-radius: 24px;
+        background:
+            linear-gradient(
+                135deg,
+                rgba(139, 92, 246, 0.20),
+                rgba(59, 130, 246, 0.10)
+            );
+        border: 1px solid rgba(139, 92, 246, 0.25);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .projects-hero::after {
+        content: "🐍";
+        position: absolute;
+        right: 50px;
+        bottom: -30px;
+        font-size: 150px;
+        opacity: 0.08;
+    }
+
+    .projects-eyebrow {
+        color: #a78bfa;
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 2px;
+        margin-bottom: 10px;
+    }
+
+    .projects-hero h1 {
+        margin: 0;
+        font-size: clamp(32px, 5vw, 56px);
+        line-height: 1.05;
+        color: var(--text-primary, #fff);
+    }
+
+    .projects-hero h1 span {
+        color: #a78bfa;
+    }
+
+    .projects-hero p {
+        max-width: 680px;
+        margin: 18px 0 25px;
+        color: var(--text-secondary, #aaa);
+        font-size: 17px;
+        line-height: 1.7;
+    }
+
+    .create-project-btn {
+        border: none;
+        padding: 13px 22px;
+        border-radius: 12px;
+        background: #8b5cf6;
+        color: white;
+        font-size: 15px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: 0.25s;
+    }
+
+    .create-project-btn:hover {
+        transform: translateY(-2px);
+        opacity: 0.9;
+    }
+
+    /* ---------- STATS ---------- */
+
+    .project-stats {
+        max-width: 1200px;
+        margin: 0 auto 30px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+    }
+
+    .stat-box {
+        padding: 20px;
+        border-radius: 16px;
+        background: var(--card-bg, #15151c);
+        border: 1px solid var(--border-color, #272733);
+        text-align: center;
+    }
+
+    .stat-icon {
+        font-size: 24px;
+    }
+
+    .stat-number {
+        margin-top: 6px;
+        font-size: 25px;
+        font-weight: 900;
+        color: var(--text-primary, white);
+    }
+
+    .stat-label {
+        margin-top: 5px;
+        font-size: 13px;
+        color: var(--text-secondary, #999);
+    }
+
+    /* ---------- TOOLBAR ---------- */
+
+    .projects-toolbar {
+        max-width: 1200px;
+        margin: 0 auto 30px;
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .project-search {
+        flex: 1;
+        min-width: 220px;
+        position: relative;
+    }
+
+    .project-search input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 14px 18px 14px 45px;
+        border-radius: 12px;
+        border: 1px solid var(--border-color, #292936);
+        background: var(--card-bg, #15151c);
+        color: var(--text-primary, white);
+        outline: none;
+        font-size: 14px;
+    }
+
+    .project-search span {
+        position: absolute;
+        left: 16px;
+        top: 12px;
+        font-size: 19px;
+    }
+
+    .filter-group {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .filter-btn {
+        border: 1px solid var(--border-color, #292936);
+        background: var(--card-bg, #15151c);
+        color: var(--text-secondary, #bbb);
+        padding: 11px 15px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 700;
+        transition: 0.2s;
+    }
+
+    .filter-btn:hover,
+    .filter-btn.active {
+        background: #8b5cf6;
+        color: white;
+        border-color: #8b5cf6;
+    }
+
+    /* ---------- SECTION HEADER ---------- */
+
+    .projects-section {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .section-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+        gap: 15px;
+    }
+
+    .section-heading h2 {
+        margin: 0;
+        color: var(--text-primary, white);
+        font-size: 25px;
+    }
+
+    .section-heading p {
+        margin: 5px 0 0;
+        color: var(--text-secondary, #999);
+        font-size: 14px;
+    }
+
+    .sort-select {
+        padding: 10px 14px;
+        border-radius: 10px;
+        border: 1px solid var(--border-color, #292936);
+        background: var(--card-bg, #15151c);
+        color: var(--text-primary, white);
+        outline: none;
+    }
+
+    /* ---------- PROJECT GRID ---------- */
+
+    .project-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 22px;
+    }
+
+    .project-card {
+        background: var(--card-bg, #15151c);
+        border: 1px solid var(--border-color, #292936);
+        border-radius: 20px;
+        overflow: hidden;
+        transition: 0.25s;
+    }
+
+    .project-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(139, 92, 246, 0.55);
+    }
+
+    .project-preview {
+        height: 180px;
+        position: relative;
+        padding: 20px;
+        box-sizing: border-box;
+        background:
+            linear-gradient(
+                135deg,
+                #161625,
+                #24243a
+            );
+        overflow: hidden;
+    }
+
+    .project-preview::before {
+        content: "";
+        position: absolute;
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        right: -45px;
+        top: -50px;
+        background: rgba(139, 92, 246, 0.15);
+    }
+
+    .project-code {
+        position: relative;
+        z-index: 2;
+        color: #d8b4fe;
+        font-family: Consolas, monospace;
+        font-size: 13px;
+        line-height: 1.65;
+    }
+
+    .difficulty {
+        position: absolute;
+        z-index: 3;
+        right: 14px;
+        top: 14px;
+        padding: 6px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 800;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+    }
+
+    .difficulty.beginner {
+        border: 1px solid #22c55e;
+    }
+
+    .difficulty.intermediate {
+        border: 1px solid #eab308;
+    }
+
+    .difficulty.advanced {
+        border: 1px solid #ef4444;
+    }
+
+    .project-body {
+        padding: 20px;
+    }
+
+    .project-title {
+        color: var(--text-primary, white);
+        font-size: 20px;
+        font-weight: 900;
+        margin-bottom: 8px;
+    }
+
+    .project-description {
+        color: var(--text-secondary, #999);
+        font-size: 14px;
+        line-height: 1.6;
+        min-height: 66px;
+    }
+
+    /* ---------- CREATOR ---------- */
+
+    .creator-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 15px 0;
+    }
+
+    .creator-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: #8b5cf6;
+        color: white;
+        font-weight: 900;
+    }
+
+    .creator-name {
+        color: var(--text-primary, white);
+        font-weight: 800;
+        font-size: 13px;
+    }
+
+    .creator-role {
+        color: var(--text-secondary, #888);
+        font-size: 11px;
+        margin-top: 2px;
+    }
+
+    .follow-btn {
+        margin-left: auto;
+        border: 1px solid #8b5cf6;
+        background: transparent;
+        color: #a78bfa;
+        padding: 7px 11px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 11px;
+        font-weight: 800;
+    }
+
+    .follow-btn.following {
+        background: #8b5cf6;
+        color: white;
+    }
+
+    /* ---------- TAGS ---------- */
+
+    .project-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 15px;
+    }
+
+    .project-tag {
+        padding: 5px 8px;
+        border-radius: 7px;
+        background: rgba(139, 92, 246, 0.12);
+        color: #a78bfa;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    /* ---------- RATING ---------- */
+
+    .rating-row {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        margin-bottom: 15px;
+    }
+
+    .stars {
+        color: #facc15;
+        letter-spacing: 1px;
+    }
+
+    .rating-number {
+        color: var(--text-primary, white);
+        font-weight: 800;
+        font-size: 13px;
+    }
+
+    .rating-count {
+        color: var(--text-secondary, #777);
+        font-size: 12px;
+    }
+
+    /* ---------- ACTIONS ---------- */
+
+    .project-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .project-action {
+        border: 1px solid var(--border-color, #292936);
+        background: transparent;
+        color: var(--text-secondary, #bbb);
+        padding: 10px;
+        border-radius: 9px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 800;
+        transition: 0.2s;
+    }
+
+    .project-action:hover {
+        background: rgba(139, 92, 246, 0.12);
+        color: #a78bfa;
+    }
+
+    .project-action.liked {
+        color: #f43f5e;
+        border-color: #f43f5e;
+    }
+
+    .project-action.saved {
+        color: #facc15;
+        border-color: #facc15;
+    }
+
+    .try-button {
+        grid-column: span 2;
+        background: #8b5cf6;
+        color: white;
+        border-color: #8b5cf6;
+    }
+
+    .try-button:hover {
+        background: #7c3aed;
+        color: white;
+    }
+
+    /* ---------- NO RESULTS ---------- */
+
+    .no-results {
+        display: none;
+        text-align: center;
+        padding: 70px 20px;
+        border: 1px dashed var(--border-color, #333);
+        border-radius: 18px;
+        color: var(--text-secondary, #888);
+    }
+
+    .no-results .emoji {
+        font-size: 45px;
+        margin-bottom: 10px;
+    }
+
+    /* ---------- MODAL ---------- */
+
+    .project-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.75);
+        display: none;
+        place-items: center;
+        padding: 20px;
+        z-index: 9999;
+        backdrop-filter: blur(5px);
+    }
+
+    .project-modal.show {
+        display: grid;
+    }
+
+    .modal-box {
+        width: min(650px, 100%);
+        max-height: 90vh;
+        overflow-y: auto;
+        background: var(--card-bg, #15151c);
+        border: 1px solid var(--border-color, #292936);
+        border-radius: 22px;
+        padding: 28px;
+        box-sizing: border-box;
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 22px;
+    }
+
+    .modal-header h2 {
+        margin: 0;
+        color: var(--text-primary, white);
+    }
+
+    .close-modal {
+        border: none;
+        background: transparent;
+        color: var(--text-secondary, #aaa);
+        font-size: 27px;
+        cursor: pointer;
+    }
+
+    .form-group {
+        margin-bottom: 16px;
+    }
+
+    .form-group label {
+        display: block;
+        color: var(--text-primary, white);
+        font-size: 13px;
+        font-weight: 800;
+        margin-bottom: 7px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 12px;
+        border-radius: 10px;
+        border: 1px solid var(--border-color, #292936);
+        background: var(--bg-primary, #0b0b0f);
+        color: var(--text-primary, white);
+        outline: none;
+        font-family: inherit;
+    }
+
+    .form-group textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+        border-color: #8b5cf6;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .modal-submit {
+        width: 100%;
+        border: none;
+        padding: 14px;
+        border-radius: 11px;
+        background: #8b5cf6;
+        color: white;
+        font-size: 15px;
+        font-weight: 900;
+        cursor: pointer;
+        margin-top: 5px;
+    }
+
+    /* ---------- REVIEW MODAL ---------- */
+
+    .review-modal-content {
+        margin-top: 5px;
+    }
+
+    .review-stars {
+        display: flex;
+        gap: 7px;
+        margin: 10px 0 18px;
+    }
+
+    .review-star {
+        font-size: 30px;
+        cursor: pointer;
+        filter: grayscale(1);
+        transition: 0.15s;
+    }
+
+    .review-star.selected {
+        filter: grayscale(0);
+        transform: scale(1.08);
+    }
+
+    /* ---------- LIGHT MODE ---------- */
+
+    body.light .projects-page {
+        background: #f5f5f8;
+    }
+
+    body.light .projects-hero {
+        background: linear-gradient(
+            135deg,
+            rgba(139, 92, 246, 0.10),
+            rgba(59, 130, 246, 0.07)
+        );
+    }
+
+    body.light .project-preview {
+        background: linear-gradient(
+            135deg,
+            #e8e8f0,
+            #f3f3fa
+        );
+    }
+
+    body.light .project-code {
+        color: #6d28d9;
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+
+    @media (max-width: 950px) {
+        .project-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .project-stats {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 650px) {
+        .projects-page {
+            padding: 25px 4%;
+        }
+
+        .projects-hero {
+            padding: 28px 22px;
+        }
+
+        .projects-hero::after {
+            display: none;
+        }
+
+        .project-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .section-heading {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .project-stats {
+            gap: 10px;
+        }
+    }
+</style>
+
+
+<div class="projects-page">
+
+    <!-- ======================================================
+         HERO
+         ====================================================== -->
+
+    <section class="projects-hero">
+
+        <div class="projects-eyebrow">
+            🚀 SNEK.PY PROJECT HUB
+        </div>
+
+        <h1>
+            Build.
+            <span>Share.</span>
+            Inspire.
+        </h1>
+
+        <p>
+            Discover amazing Python projects created by students,
+            showcase your own work, get feedback, and learn from
+            what other developers are building.
+        </p>
+
+        <button
+            class="create-project-btn"
+            id="openProjectModal">
+            ➕ Create Project
+        </button>
+
+    </section>
+
+
+    <!-- ======================================================
+         STATS
+         ====================================================== -->
+
+    <section class="project-stats">
+
+        <div class="stat-box">
+            <div class="stat-icon">🚀</div>
+            <div class="stat-number" id="totalProjects">
+                24
+            </div>
+            <div class="stat-label">
+                Projects
+            </div>
+        </div>
+
+        <div class="stat-box">
+            <div class="stat-icon">👨‍💻</div>
+            <div class="stat-number">
+                18
+            </div>
+            <div class="stat-label">
+                Creators
+            </div>
+        </div>
+
+        <div class="stat-box">
+            <div class="stat-icon">❤️</div>
+            <div class="stat-number" id="totalLikes">
+                1.8K
+            </div>
+            <div class="stat-label">
+                Community Likes
+            </div>
+        </div>
+
+        <div class="stat-box">
+            <div class="stat-icon">⭐</div>
+            <div class="stat-number">
+                4.7
+            </div>
+            <div class="stat-label">
+                Average Rating
+            </div>
+        </div>
+
+    </section>
+
+
+    <!-- ======================================================
+         SEARCH + FILTERS
+         ====================================================== -->
+
+    <section class="projects-toolbar">
+
+        <div class="project-search">
+
+            <span>🔍</span>
+
+            <input
+                type="text"
+                id="projectSearch"
+                placeholder="Search projects, Python topics, creators..."
+                autocomplete="off">
+
+        </div>
+
+        <div class="filter-group">
+
+            <button
+                class="filter-btn active"
+                data-category="all">
+                All
+            </button>
+
+            <button
+                class="filter-btn"
+                data-category="web">
+                🌐 Web
+            </button>
+
+            <button
+                class="filter-btn"
+                data-category="ai">
+                🤖 AI/ML
+            </button>
+
+            <button
+                class="filter-btn"
+                data-category="automation">
+                ⚙️ Automation
+            </button>
+
+            <button
+                class="filter-btn"
+                data-category="games">
+                🎮 Games
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- ======================================================
+         PROJECT SECTION
+         ====================================================== -->
+
+    <section class="projects-section">
+
+        <div class="section-heading">
+
+            <div>
+                <h2>🔥 Discover Projects</h2>
+                <p>
+                    Explore what the SNEK.PY community is building.
+                </p>
+            </div>
+
+            <select
+                class="sort-select"
+                id="sortProjects">
+
+                <option value="popular">
+                    Most Popular
+                </option>
+
+                <option value="rating">
+                    Highest Rated
+                </option>
+
+                <option value="newest">
+                    Newest
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div
+            class="project-grid"
+            id="projectGrid">
+
+
+            <!-- PROJECT 1 -->
+
+            <article
+                class="project-card"
+                data-category="ai"
+                data-title="AI Study Assistant"
+                data-rating="4.9"
+                data-popularity="950">
+
+                <div class="project-preview">
+
+                    <span class="difficulty advanced">
+                        ADVANCED
+                    </span>
+
+                    <div class="project-code">
+                        <div>import openai</div>
+                        <div>import tkinter</div>
+                        <br>
+                        <div>assistant = StudyAI()</div>
+                        <div>assistant.help()</div>
+                        <br>
+                        <div>🤖 Smart Learning...</div>
+                    </div>
+
+                </div>
+
+                <div class="project-body">
+
+                    <div class="project-title">
+                        🤖 AI Study Assistant
+                    </div>
+
+                    <div class="project-description">
+                        An AI-powered study assistant that helps
+                        students understand difficult topics,
+                        generate summaries and organize study plans.
+                    </div>
+
+                    <div class="creator-row">
+
+                        <div class="creator-avatar">
+                            A
+                        </div>
+
+                        <div>
+                            <div class="creator-name">
+                                Aryan
+                            </div>
+
+                            <div class="creator-role">
+                                Python • AI/ML
+                            </div>
+                        </div>
+
+                        <button
+                            class="follow-btn">
+                            + Follow
+                        </button>
+
+                    </div>
+
+                    <div class="project-tags">
+                        <span class="project-tag">Python</span>
+                        <span class="project-tag">AI</span>
+                        <span class="project-tag">Tkinter</span>
+                    </div>
+
+                    <div class="rating-row">
+
+                        <span class="stars">
+                            ★★★★★
+                        </span>
+
+                        <span class="rating-number">
+                            4.9
+                        </span>
+
+                        <span class="rating-count">
+                            (86)
+                        </span>
+
+                    </div>
+
+                    <div class="project-actions">
+
+                        <button
+                            class="project-action like-btn">
+                            ❤️ Like
+                        </button>
+
+                        <button
+                            class="project-action save-btn">
+                            🔖 Save
+                        </button>
+
+                        <button
+                            class="project-action review-btn">
+                            ⭐ Review
+                        </button>
+
+                        <button
+                            class="project-action share-btn">
+                            📤 Share
+                        </button>
+
+                        <button
+                            class="project-action try-button"
+                            data-project="AI Study Assistant">
+                            ▶ Try Project
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <!-- PROJECT 2 -->
+
+            <article
+                class="project-card"
+                data-category="web"
+                data-title="Campus Lost & Found"
+                data-rating="4.8"
+                data-popularity="830">
+
+                <div class="project-preview">
+
+                    <span class="difficulty intermediate">
+                        INTERMEDIATE
+                    </span>
+
+                    <div class="project-code">
+                        <div>from flask import Flask</div>
+                        <div>import mysql.connector</div>
+                        <br>
+                        <div>app = Flask(__name__)</div>
+                        <div>db.connect()</div>
+                        <br>
+                        <div>🔎 CampusFind</div>
+                    </div>
+
+                </div>
+
+                <div class="project-body">
+
+                    <div class="project-title">
+                        🔎 Campus Lost & Found
+                    </div>
+
+                    <div class="project-description">
+                        A web application where students can
+                        report lost items, find recovered items,
+                        and submit claims.
+                    </div>
+
+                    <div class="creator-row">
+
+                        <div class="creator-avatar">
+                            S
+                        </div>
+
+                        <div>
+                            <div class="creator-name">
+                                Sahana
+                            </div>
+
+                            <div class="creator-role">
+                                Python • Flask • MySQL
+                            </div>
+                        </div>
+
+                        <button
+                            class="follow-btn">
+                            + Follow
+                        </button>
+
+                    </div>
+
+                    <div class="project-tags">
+                        <span class="project-tag">Python</span>
+                        <span class="project-tag">Flask</span>
+                        <span class="project-tag">MySQL</span>
+                    </div>
+
+                    <div class="rating-row">
+
+                        <span class="stars">
+                            ★★★★★
+                        </span>
+
+                        <span class="rating-number">
+                            4.8
+                        </span>
+
+                        <span class="rating-count">
+                            (62)
+                        </span>
+
+                    </div>
+
+                    <div class="project-actions">
+
+                        <button
+                            class="project-action like-btn">
+                            ❤️ Like
+                        </button>
+
+                        <button
+                            class="project-action save-btn">
+                            🔖 Save
+                        </button>
+
+                        <button
+                            class="project-action review-btn">
+                            ⭐ Review
+                        </button>
+
+                        <button
+                            class="project-action share-btn">
+                            📤 Share
+                        </button>
+
+                        <button
+                            class="project-action try-button"
+                            data-project="Campus Lost & Found">
+                            ▶ Try Project
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <!-- PROJECT 3 -->
+
+            <article
+                class="project-card"
+                data-category="games"
+                data-title="Python Snake Game"
+                data-rating="4.7"
+                data-popularity="720">
+
+                <div class="project-preview">
+
+                    <span class="difficulty beginner">
+                        BEGINNER
+                    </span>
+
+                    <div class="project-code">
+                        <div>import pygame</div>
+                        <br>
+                        <div>snake.move()</div>
+                        <div>food.spawn()</div>
+                        <div>score += 10</div>
+                        <br>
+                        <div>🐍 GAME START!</div>
+                    </div>
+
+                </div>
+
+                <div class="project-body">
+
+                    <div class="project-title">
+                        🐍 Python Snake Game
+                    </div>
+
+                    <div class="project-description">
+                        A beginner-friendly Snake game built with
+                        Python and Pygame. Perfect for learning
+                        loops, conditions and game logic.
+                    </div>
+
+                    <div class="creator-row">
+
+                        <div class="creator-avatar">
+                            R
+                        </div>
+
+                        <div>
+                            <div class="creator-name">
+                                Rahul
+                            </div>
+
+                            <div class="creator-role">
+                                Python • Game Development
+                            </div>
+                        </div>
+
+                        <button
+                            class="follow-btn">
+                            + Follow
+                        </button>
+
+                    </div>
+
+                    <div class="project-tags">
+                        <span class="project-tag">Python</span>
+                        <span class="project-tag">Pygame</span>
+                        <span class="project-tag">Game</span>
+                    </div>
+
+                    <div class="rating-row">
+
+                        <span class="stars">
+                            ★★★★☆
+                        </span>
+
+                        <span class="rating-number">
+                            4.7
+                        </span>
+
+                        <span class="rating-count">
+                            (48)
+                        </span>
+
+                    </div>
+
+                    <div class="project-actions">
+
+                        <button
+                            class="project-action like-btn">
+                            ❤️ Like
+                        </button>
+
+                        <button
+                            class="project-action save-btn">
+                            🔖 Save
+                        </button>
+
+                        <button
+                            class="project-action review-btn">
+                            ⭐ Review
+                        </button>
+
+                        <button
+                            class="project-action share-btn">
+                            📤 Share
+                        </button>
+
+                        <button
+                            class="project-action try-button"
+                            data-project="Python Snake Game">
+                            ▶ Try Project
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <!-- PROJECT 4 -->
+
+            <article
+                class="project-card"
+                data-category="automation"
+                data-title="Smart File Organizer"
+                data-rating="4.6"
+                data-popularity="610">
+
+                <div class="project-preview">
+
+                    <span class="difficulty beginner">
+                        BEGINNER
+                    </span>
+
+                    <div class="project-code">
+                        <div>import os</div>
+                        <div>import shutil</div>
+                        <br>
+                        <div>organize_files()</div>
+                        <br>
+                        <div>📁 Files Organized!</div>
+                    </div>
+
+                </div>
+
+                <div class="project-body">
+
+                    <div class="project-title">
+                        📁 Smart File Organizer
+                    </div>
+
+                    <div class="project-description">
+                        Automatically organizes messy folders by
+                        detecting file types and moving them into
+                        appropriate folders.
+                    </div>
+
+                    <div class="creator-row">
+
+                        <div class="creator-avatar">
+                            M
+                        </div>
+
+                        <div>
+                            <div class="creator-name">
+                                Meera
+                            </div>
+
+                            <div class="creator-role">
+                                Python • Automation
+                            </div>
+                        </div>
+
+                        <button
+                            class="follow-btn">
+                            + Follow
+                        </button>
+
+                    </div>
+
+                    <div class="project-tags">
+                        <span class="project-tag">Python</span>
+                        <span class="project-tag">Automation</span>
+                        <span class="project-tag">OS</span>
+                    </div>
+
+                    <div class="rating-row">
+
+                        <span class="stars">
+                            ★★★★☆
+                        </span>
+
+                        <span class="rating-number">
+                            4.6
+                        </span>
+
+                        <span class="rating-count">
+                            (39)
+                        </span>
+
+                    </div>
+
+                    <div class="project-actions">
+
+                        <button
+                            class="project-action like-btn">
+                            ❤️ Like
+                        </button>
+
+                        <button
+                            class="project-action save-btn">
+                            🔖 Save
+                        </button>
+
+                        <button
+                            class="project-action review-btn">
+                            ⭐ Review
+                        </button>
+
+                        <button
+                            class="project-action share-btn">
+                            📤 Share
+                        </button>
+
+                        <button
+                            class="project-action try-button"
+                            data-project="Smart File Organizer">
+                            ▶ Try Project
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <!-- PROJECT 5 -->
+
+            <article
+                class="project-card"
+                data-category="web"
+                data-title="Student Portfolio"
+                data-rating="4.5"
+                data-popularity="520">
+
+                <div class="project-preview">
+
+                    <span class="difficulty beginner">
+                        BEGINNER
+                    </span>
+
+                    <div class="project-code">
+                        <div>HTML + CSS</div>
+                        <div>Flask</div>
+                        <br>
+                        <div>portfolio.show()</div>
+                        <br>
+                        <div>👨‍💻 Hello Developer!</div>
+                    </div>
+
+                </div>
+
+                <div class="project-body">
+
+                    <div class="project-title">
+                        👨‍💻 Student Portfolio
+                    </div>
+
+                    <div class="project-description">
+                        A clean personal portfolio website designed
+                        for students to showcase skills, projects,
+                        achievements and certificates.
+                    </div>
+
+                    <div class="creator-row">
+
+                        <div class="creator-avatar">
+                            K
+                        </div>
+
+                        <div>
+                            <div class="creator-name">
+                                Kiran
+                            </div>
+
+                            <div class="creator-role">
+                                Python • Web Development
+                            </div>
+                        </div>
+
+                        <button
+                            class="follow-btn">
+                            + Follow
+                        </button>
+
+                    </div>
+
+                    <div class="project-tags">
+                        <span class="project-tag">Python</span>
+                        <span class="project-tag">Flask</span>
+                        <span class="project-tag">HTML</span>
+                    </div>
+
+                    <div class="rating-row">
+
+                        <span class="stars">
+                            ★★★★☆
+                        </span>
+
+                        <span class="rating-number">
+                            4.5
+                        </span>
+
+                        <span class="rating-count">
+                            (31)
+                        </span>
+
+                    </div>
+
+                    <div class="project-actions">
+
+                        <button
+                            class="project-action like-btn">
+                            ❤️ Like
+                        </button>
+
+                        <button
+                            class="project-action save-btn">
+                            🔖 Save
+                        </button>
+
+                        <button
+                            class="project-action review-btn">
+                            ⭐ Review
+                        </button>
+
+                        <button
+                            class="project-action share-btn">
+                            📤 Share
+                        </button>
+
+                        <button
+                            class="project-action try-button"
+                            data-project="Student Portfolio">
+                            ▶ Try Project
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <!-- PROJECT 6 -->
+
+            <article
+                class="project-card"
+                data-category="ai"
+                data-title="AI Image Classifier"
+                data-rating="4.8"
+                data-popularity="790">
+
+                <div class="project-preview">
+
+                    <span class="difficulty advanced">
+                        ADVANCED
+                    </span>
+
+                    <div class="project-code">
+                        <div>import tensorflow</div>
+                        <div>import numpy</div>
+                        <br>
+                        <div>model.predict()</div>
+                        <br>
+                        <div>🧠 Prediction Ready!</div>
+                    </div>
+
+                </div>
+
+                <div class="project-body">
+
+                    <div class="project-title">
+                        🧠 AI Image Classifier
+                    </div>
+
+                    <div class="project-description">
+                        A machine learning project that classifies
+                        images using a trained neural network and
+                        provides prediction results.
+                    </div>
+
+                    <div class="creator-row">
+
+                        <div class="creator-avatar">
+                            N
+                        </div>
+
+                        <div>
+                            <div class="creator-name">
+                                Neha
+                            </div>
+
+                            <div class="creator-role">
+                                Python • Machine Learning
+                            </div>
+                        </div>
+
+                        <button
+                            class="follow-btn">
+                            + Follow
+                        </button>
+
+                    </div>
+
+                    <div class="project-tags">
+                        <span class="project-tag">Python</span>
+                        <span class="project-tag">ML</span>
+                        <span class="project-tag">TensorFlow</span>
+                    </div>
+
+                    <div class="rating-row">
+
+                        <span class="stars">
+                            ★★★★★
+                        </span>
+
+                        <span class="rating-number">
+                            4.8
+                        </span>
+
+                        <span class="rating-count">
+                            (74)
+                        </span>
+
+                    </div>
+
+                    <div class="project-actions">
+
+                        <button
+                            class="project-action like-btn">
+                            ❤️ Like
+                        </button>
+
+                        <button
+                            class="project-action save-btn">
+                            🔖 Save
+                        </button>
+
+                        <button
+                            class="project-action review-btn">
+                            ⭐ Review
+                        </button>
+
+                        <button
+                            class="project-action share-btn">
+                            📤 Share
+                        </button>
+
+                        <button
+                            class="project-action try-button"
+                            data-project="AI Image Classifier">
+                            ▶ Try Project
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+        </div>
+
+
+        <div
+            class="no-results"
+            id="noResults">
+
+            <div class="emoji">
+                🔎
+            </div>
+
+            <h3>
+                No projects found
+            </h3>
+
+            <p>
+                Try another search or choose a different category.
+            </p>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- ==========================================================
+     CREATE PROJECT MODAL
+     ========================================================== -->
+
+<div
+    class="project-modal"
+    id="projectModal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h2>
+                🚀 Create Your Project
+            </h2>
+
+            <button
+                class="close-modal"
+                id="closeProjectModal">
+                ×
+            </button>
+
+        </div>
+
+        <form id="projectForm">
+
+            <div class="form-group">
+
+                <label>
+                    Project Title
+                </label>
+
+                <input
+                    type="text"
+                    id="projectTitle"
+                    placeholder="Example: AI Chatbot"
+                    required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Description
+                </label>
+
+                <textarea
+                    id="projectDescription"
+                    placeholder="Explain what your project does..."
+                    required></textarea>
+
+            </div>
+
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label>
+                        Category
+                    </label>
+
+                    <select id="projectCategory">
+
+                        <option value="web">
+                            🌐 Web Development
+                        </option>
+
+                        <option value="ai">
+                            🤖 AI / Machine Learning
+                        </option>
+
+                        <option value="automation">
+                            ⚙️ Automation
+                        </option>
+
+                        <option value="games">
+                            🎮 Games
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Difficulty
+                    </label>
+
+                    <select id="projectDifficulty">
+
+                        <option>
+                            Beginner
+                        </option>
+
+                        <option>
+                            Intermediate
+                        </option>
+
+                        <option>
+                            Advanced
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Technologies
+                </label>
+
+                <input
+                    type="text"
+                    id="projectTechnologies"
+                    placeholder="Python, Flask, MySQL...">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    GitHub / Project Link
+                </label>
+
+                <input
+                    type="url"
+                    id="projectLink"
+                    placeholder="https://github.com/...">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Project File
+                </label>
+
+                <input
+                    type="file"
+                    id="projectFile"
+                    accept=".zip,.py,.html,.css,.js">
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="modal-submit">
+
+                🚀 Publish Project
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- ==========================================================
+     REVIEW MODAL
+     ========================================================== -->
+
+<div
+    class="project-modal"
+    id="reviewModal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h2>
+                ⭐ Rate Project
+            </h2>
+
+            <button
+                class="close-modal"
+                id="closeReviewModal">
+                ×
+            </button>
+
+        </div>
+
+        <div class="review-modal-content">
+
+            <p id="reviewProjectName"
+               style="color:var(--text-secondary,#aaa);">
+                Rate this project
+            </p>
+
+            <div class="review-stars">
+
+                <span class="review-star" data-rating="1">
+                    ⭐
+                </span>
+
+                <span class="review-star" data-rating="2">
+                    ⭐
+                </span>
+
+                <span class="review-star" data-rating="3">
+                    ⭐
+                </span>
+
+                <span class="review-star" data-rating="4">
+                    ⭐
+                </span>
+
+                <span class="review-star" data-rating="5">
+                    ⭐
+                </span>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    Your Review
+                </label>
+
+                <textarea
+                    id="reviewText"
+                    placeholder="What did you like about this project?"></textarea>
+
+            </div>
+
+            <button
+                class="modal-submit"
+                id="submitReview">
+
+                ⭐ Submit Review
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    /* =====================================================
+       SEARCH
+       ===================================================== */
+
+    const searchInput =
+        document.getElementById("projectSearch");
+
+    const projectCards =
+        Array.from(document.querySelectorAll(".project-card"));
+
+    const noResults =
+        document.getElementById("noResults");
+
+    let activeCategory = "all";
+
+
+    function filterProjects() {
+
+        const searchText =
+            searchInput.value
+                .toLowerCase()
+                .trim();
+
+        let visibleCount = 0;
+
+        projectCards.forEach(function (card) {
+
+            const title =
+                card.dataset.title.toLowerCase();
+
+            const category =
+                card.dataset.category.toLowerCase();
+
+            const text =
+                card.innerText.toLowerCase();
+
+            const categoryMatch =
+                activeCategory === "all" ||
+                category === activeCategory;
+
+            const searchMatch =
+                title.includes(searchText) ||
+                text.includes(searchText);
+
+            if (categoryMatch && searchMatch) {
+
+                card.style.display = "";
+
+                visibleCount++;
+
+            } else {
+
+                card.style.display = "none";
+
+            }
+
+        });
+
+        noResults.style.display =
+            visibleCount === 0
+                ? "block"
+                : "none";
+    }
+
+
+    if (searchInput) {
+
+        searchInput.addEventListener(
+            "input",
+            filterProjects
+        );
+
+    }
+
+
+    /* =====================================================
+       CATEGORY FILTER
+       ===================================================== */
+
+    const filterButtons =
+        document.querySelectorAll(".filter-btn");
+
+    filterButtons.forEach(function (button) {
+
+        button.addEventListener("click", function () {
+
+            filterButtons.forEach(function (btn) {
+                btn.classList.remove("active");
+            });
+
+            button.classList.add("active");
+
+            activeCategory =
+                button.dataset.category;
+
+            filterProjects();
+
+        });
+
+    });
+
+
+    /* =====================================================
+       LIKE
+       ===================================================== */
+
+    document.querySelectorAll(".like-btn")
+        .forEach(function (button) {
+
+            button.addEventListener("click", function () {
+
+                button.classList.toggle("liked");
+
+                if (button.classList.contains("liked")) {
+
+                    button.textContent =
+                        "❤️ Liked";
+
+                } else {
+
+                    button.textContent =
+                        "❤️ Like";
+
+                }
+
+            });
+
+        });
+
+
+    /* =====================================================
+       SAVE
+       ===================================================== */
+
+    document.querySelectorAll(".save-btn")
+        .forEach(function (button) {
+
+            button.addEventListener("click", function () {
+
+                button.classList.toggle("saved");
+
+                if (button.classList.contains("saved")) {
+
+                    button.textContent =
+                        "🔖 Saved";
+
+                } else {
+
+                    button.textContent =
+                        "🔖 Save";
+
+                }
+
+            });
+
+        });
+
+
+    /* =====================================================
+       FOLLOW
+       ===================================================== */
+
+    document.querySelectorAll(".follow-btn")
+        .forEach(function (button) {
+
+            button.addEventListener("click", function () {
+
+                button.classList.toggle("following");
+
+                if (button.classList.contains("following")) {
+
+                    button.textContent =
+                        "✓ Following";
+
+                } else {
+
+                    button.textContent =
+                        "+ Follow";
+
+                }
+
+            });
+
+        });
+
+
+    /* =====================================================
+       SHARE
+       ===================================================== */
+
+    document.querySelectorAll(".share-btn")
+        .forEach(function (button) {
+
+            button.addEventListener("click", async function () {
+
+                const card =
+                    button.closest(".project-card");
+
+                const title =
+                    card.dataset.title;
+
+                const shareData = {
+                    title: title,
+                    text:
+                        "Check out this Python project on SNEK.PY: " +
+                        title,
+                    url: window.location.href
+                };
+
+                try {
+
+                    if (navigator.share) {
+
+                        await navigator.share(shareData);
+
+                    } else if (navigator.clipboard) {
+
+                        await navigator.clipboard.writeText(
+                            window.location.href
+                        );
+
+                        alert(
+                            "🔗 Project link copied!"
+                        );
+
+                    } else {
+
+                        alert(
+                            "📤 Share this project using your browser's share options."
+                        );
+
+                    }
+
+                } catch (error) {
+
+                    console.log(
+                        "Share cancelled."
+                    );
+
+                }
+
+            });
+
+        });
+
+
+    /* =====================================================
+       TRY PROJECT
+       ===================================================== */
+
+    document.querySelectorAll(".try-button")
+        .forEach(function (button) {
+
+            button.addEventListener("click", function () {
+
+                const projectName =
+                    button.dataset.project;
+
+                alert(
+                    "🚀 Opening " +
+                    projectName +
+                    "...\n\n" +
+                    "The project runner will be connected to the backend/database in the next development stage."
+                );
+
+            });
+
+        });
+
+
+    /* =====================================================
+       REVIEW MODAL
+       ===================================================== */
+
+    const reviewModal =
+        document.getElementById("reviewModal");
+
+    const reviewProjectName =
+        document.getElementById("reviewProjectName");
+
+    const reviewText =
+        document.getElementById("reviewText");
+
+    const reviewStars =
+        document.querySelectorAll(".review-star");
+
+    let selectedRating = 0;
+
+    document.querySelectorAll(".review-btn")
+        .forEach(function (button) {
+
+            button.addEventListener("click", function () {
+
+                const card =
+                    button.closest(".project-card");
+
+                const projectName =
+                    card.dataset.title;
+
+                reviewProjectName.textContent =
+                    "Rate: " + projectName;
+
+                selectedRating = 0;
+
+                reviewStars.forEach(function (star) {
+                    star.classList.remove("selected");
+                });
+
+                reviewText.value = "";
+
+                reviewModal.classList.add("show");
+
+            });
+
+        });
+
+
+    reviewStars.forEach(function (star) {
+
+        star.addEventListener("click", function () {
+
+            selectedRating =
+                Number(star.dataset.rating);
+
+            reviewStars.forEach(function (item) {
+
+                const rating =
+                    Number(item.dataset.rating);
+
+                if (rating <= selectedRating) {
+
+                    item.classList.add("selected");
+
+                } else {
+
+                    item.classList.remove("selected");
+
+                }
+
+            });
+
+        });
+
+    });
+
+
+    document.getElementById("submitReview")
+        .addEventListener("click", function () {
+
+            if (selectedRating === 0) {
+
+                alert(
+                    "⭐ Please select a rating first."
+                );
+
+                return;
+
+            }
+
+            alert(
+                "✅ Review submitted!\n\n" +
+                "Rating: " +
+                selectedRating +
+                "/5\n\n" +
+                "Your review has been recorded for this demo."
+            );
+
+            reviewModal.classList.remove("show");
+
+        });
+
+
+    document.getElementById("closeReviewModal")
+        .addEventListener("click", function () {
+
+            reviewModal.classList.remove("show");
+
+        });
+
+
+    /* =====================================================
+       CREATE PROJECT MODAL
+       ===================================================== */
+
+    const projectModal =
+        document.getElementById("projectModal");
+
+    document.getElementById("openProjectModal")
+        .addEventListener("click", function () {
+
+            projectModal.classList.add("show");
+
+        });
+
+
+    document.getElementById("closeProjectModal")
+        .addEventListener("click", function () {
+
+            projectModal.classList.remove("show");
+
+        });
+
+
+    /* =====================================================
+       PROJECT FORM
+       ===================================================== */
+
+    document.getElementById("projectForm")
+        .addEventListener("submit", function (event) {
+
+            event.preventDefault();
+
+            const title =
+                document.getElementById("projectTitle")
+                    .value
+                    .trim();
+
+            const description =
+                document.getElementById("projectDescription")
+                    .value
+                    .trim();
+
+            if (!title || !description) {
+
+                alert(
+                    "⚠️ Please enter the project title and description."
+                );
+
+                return;
+
+            }
+
+            const file =
+                document.getElementById("projectFile")
+                    .files[0];
+
+            if (file) {
+
+                const maxSize =
+                    20 * 1024 * 1024;
+
+                if (file.size > maxSize) {
+
+                    alert(
+                        "⚠️ Project file must be smaller than 20 MB."
+                    );
+
+                    return;
+
+                }
+
+            }
+
+            alert(
+                "🎉 Project created successfully!\n\n" +
+                "Project: " +
+                title +
+                "\n\n" +
+                "Your project will appear in the community after backend/database integration."
+            );
+
+            this.reset();
+
+            projectModal.classList.remove("show");
+
+        });
+
+
+    /* =====================================================
+       SORTING
+       ===================================================== */
+
+    const sortProjects =
+        document.getElementById("sortProjects");
+
+    sortProjects.addEventListener(
+        "change",
+        function () {
+
+            const cards =
+                Array.from(
+                    document.querySelectorAll(".project-card")
+                );
+
+            const mode =
+                sortProjects.value;
+
+            cards.sort(function (a, b) {
+
+                if (mode === "rating") {
+
+                    return (
+                        Number(b.dataset.rating) -
+                        Number(a.dataset.rating)
+                    );
+
+                }
+
+                if (mode === "newest") {
+
+                    return 0;
+
+                }
+
+                return (
+                    Number(b.dataset.popularity) -
+                    Number(a.dataset.popularity)
+                );
+
+            });
+
+            const grid =
+                document.getElementById("projectGrid");
+
+            cards.forEach(function (card) {
+
+                grid.appendChild(card);
+
+            });
+
+            filterProjects();
+
+        }
+    );
+
+
+    /* =====================================================
+       CLOSE MODALS WHEN CLICKING OUTSIDE
+       ===================================================== */
+
+    [projectModal, reviewModal]
+        .forEach(function (modal) {
+
+            modal.addEventListener(
+                "click",
+                function (event) {
+
+                    if (event.target === modal) {
+
+                        modal.classList.remove("show");
+
+                    }
+
+                }
+            );
+
+        });
+
+
+    /* =====================================================
+       ESC KEY
+       ===================================================== */
+
+    document.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (event.key === "Escape") {
+
+                projectModal.classList.remove("show");
+                reviewModal.classList.remove("show");
+
+            }
+
+        }
+    );
+
+});
+</script>
+
+{% endblock %}

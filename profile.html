@@ -1,0 +1,2101 @@
+{% extends "base.html" %}
+
+{% block title %}
+SNEK.PY — My Profile
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+/* =========================================================
+   PROFILE PAGE
+========================================================= */
+
+.profile-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 24px 70px;
+}
+
+
+/* =========================================================
+   PROFILE HERO
+========================================================= */
+
+.profile-hero {
+    position: relative;
+    overflow: hidden;
+
+    padding: 35px;
+
+    border-radius: 28px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(139, 92, 246, 0.20),
+            rgba(59, 130, 246, 0.10)
+        );
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,0.25);
+}
+
+
+.profile-hero::before {
+    content: "";
+
+    position: absolute;
+
+    width: 280px;
+    height: 280px;
+
+    border-radius: 50%;
+
+    background: rgba(139,92,246,0.12);
+
+    top: -150px;
+    right: -100px;
+
+    filter: blur(10px);
+}
+
+
+.profile-main {
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 28px;
+
+    z-index: 2;
+}
+
+
+/* =========================================================
+   AVATAR
+========================================================= */
+
+.profile-avatar {
+    width: 125px;
+    height: 125px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 58px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #8b5cf6,
+            #6366f1
+        );
+
+    border: 5px solid rgba(255,255,255,0.12);
+
+    box-shadow:
+        0 10px 35px rgba(0,0,0,0.35);
+}
+
+
+.profile-info {
+    flex: 1;
+}
+
+
+.profile-name-row {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    flex-wrap: wrap;
+}
+
+
+.profile-name {
+    margin: 0;
+
+    font-size: 34px;
+
+    font-weight: 800;
+}
+
+
+.verified {
+    width: 24px;
+    height: 24px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #6366f1;
+
+    font-size: 13px;
+}
+
+
+.username {
+    margin-top: 5px;
+
+    color: #a1a1aa;
+
+    font-size: 15px;
+}
+
+
+.bio {
+    max-width: 650px;
+
+    margin-top: 14px;
+
+    line-height: 1.7;
+
+    color: #c4c4cc;
+
+    font-size: 16px;
+}
+
+
+/* =========================================================
+   PROFILE ACTIONS
+========================================================= */
+
+.profile-actions {
+    display: flex;
+
+    gap: 10px;
+
+    margin-top: 18px;
+
+    flex-wrap: wrap;
+}
+
+
+.profile-button {
+    border: none;
+
+    padding: 11px 18px;
+
+    border-radius: 12px;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+
+.profile-button:hover {
+    transform: translateY(-2px);
+}
+
+
+.edit-button {
+    background: #8b5cf6;
+
+    color: white;
+}
+
+
+.share-button {
+    background: rgba(255,255,255,0.08);
+
+    color: inherit;
+
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+
+/* =========================================================
+   PROFILE STATS
+========================================================= */
+
+.profile-stats {
+    position: relative;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 15px;
+
+    margin-top: 30px;
+
+    z-index: 2;
+}
+
+
+.stat-card {
+    padding: 20px;
+
+    text-align: center;
+
+    border-radius: 18px;
+
+    background: rgba(255,255,255,0.045);
+
+    border: 1px solid rgba(255,255,255,0.07);
+
+    transition: 0.2s ease;
+}
+
+
+.stat-card:hover {
+    transform: translateY(-3px);
+
+    background: rgba(255,255,255,0.07);
+}
+
+
+.stat-number {
+    display: block;
+
+    font-size: 25px;
+
+    font-weight: 800;
+}
+
+
+.stat-label {
+    display: block;
+
+    margin-top: 5px;
+
+    font-size: 13px;
+
+    color: #a1a1aa;
+}
+
+
+/* =========================================================
+   MAIN GRID
+========================================================= */
+
+.profile-grid {
+    display: grid;
+
+    grid-template-columns:
+        330px 1fr;
+
+    gap: 24px;
+
+    margin-top: 25px;
+}
+
+
+/* =========================================================
+   CARDS
+========================================================= */
+
+.profile-card {
+    padding: 24px;
+
+    border-radius: 22px;
+
+    background: rgba(255,255,255,0.035);
+
+    border: 1px solid rgba(255,255,255,0.07);
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.12);
+}
+
+
+.profile-card + .profile-card {
+    margin-top: 20px;
+}
+
+
+.card-title {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 20px;
+}
+
+
+.card-title h2 {
+    margin: 0;
+
+    font-size: 19px;
+}
+
+
+.card-title span {
+    font-size: 13px;
+
+    color: #a1a1aa;
+}
+
+
+/* =========================================================
+   LEVEL
+========================================================= */
+
+.level-row {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 10px;
+}
+
+
+.level-name {
+    font-weight: 700;
+}
+
+
+.level-xp {
+    font-size: 13px;
+
+    color: #a1a1aa;
+}
+
+
+.progress-bar {
+    width: 100%;
+
+    height: 10px;
+
+    overflow: hidden;
+
+    border-radius: 20px;
+
+    background: rgba(255,255,255,0.08);
+}
+
+
+.progress-fill {
+    width: 68%;
+
+    height: 100%;
+
+    border-radius: inherit;
+
+    background:
+        linear-gradient(
+            90deg,
+            #8b5cf6,
+            #6366f1
+        );
+}
+
+
+.progress-text {
+    margin-top: 9px;
+
+    font-size: 12px;
+
+    color: #a1a1aa;
+}
+
+
+/* =========================================================
+   SKILLS
+========================================================= */
+
+.skills {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+}
+
+
+.skill {
+    padding: 8px 11px;
+
+    border-radius: 10px;
+
+    background: rgba(139,92,246,0.12);
+
+    border: 1px solid rgba(139,92,246,0.18);
+
+    font-size: 13px;
+
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   BADGES
+========================================================= */
+
+.badges {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 10px;
+}
+
+
+.badge {
+    padding: 14px 7px;
+
+    text-align: center;
+
+    border-radius: 15px;
+
+    background: rgba(255,255,255,0.04);
+
+    border: 1px solid rgba(255,255,255,0.06);
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+
+.badge:hover {
+    transform: translateY(-3px);
+
+    background: rgba(139,92,246,0.10);
+}
+
+
+.badge-icon {
+    display: block;
+
+    font-size: 28px;
+
+    margin-bottom: 7px;
+}
+
+
+.badge-name {
+    font-size: 11px;
+
+    color: #c4c4cc;
+}
+
+
+/* =========================================================
+   PROJECTS
+========================================================= */
+
+.project-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 15px;
+}
+
+
+.project-card {
+    overflow: hidden;
+
+    border-radius: 17px;
+
+    background: rgba(255,255,255,0.035);
+
+    border: 1px solid rgba(255,255,255,0.07);
+
+    transition: 0.2s ease;
+}
+
+
+.project-card:hover {
+    transform: translateY(-4px);
+
+    border-color: rgba(139,92,246,0.35);
+}
+
+
+.project-cover {
+    height: 125px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 43px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(139,92,246,0.18),
+            rgba(59,130,246,0.10)
+        );
+}
+
+
+.project-content {
+    padding: 15px;
+}
+
+
+.project-name {
+    margin: 0;
+
+    font-size: 16px;
+}
+
+
+.project-description {
+    margin-top: 7px;
+
+    color: #a1a1aa;
+
+    font-size: 12px;
+
+    line-height: 1.5;
+}
+
+
+.project-footer {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-top: 13px;
+}
+
+
+.project-rating {
+    font-size: 12px;
+
+    color: #fbbf24;
+}
+
+
+.project-button {
+    border: none;
+
+    padding: 7px 10px;
+
+    border-radius: 8px;
+
+    background: rgba(139,92,246,0.15);
+
+    color: #c4b5fd;
+
+    cursor: pointer;
+
+    font-size: 11px;
+
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   ACTIVITY
+========================================================= */
+
+.activity {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 14px;
+}
+
+
+.activity-item {
+    display: flex;
+
+    gap: 13px;
+
+    align-items: flex-start;
+}
+
+
+.activity-icon {
+    width: 38px;
+    height: 38px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    background: rgba(139,92,246,0.12);
+}
+
+
+.activity-text {
+    line-height: 1.5;
+
+    font-size: 13px;
+}
+
+
+.activity-time {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #777;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   EDIT PROFILE MODAL
+========================================================= */
+
+.modal {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 999;
+
+    display: none;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(0,0,0,0.72);
+
+    backdrop-filter: blur(8px);
+}
+
+
+.modal.active {
+    display: flex;
+}
+
+
+.modal-box {
+    width: min(520px, 100%);
+
+    max-height: 90vh;
+
+    overflow-y: auto;
+
+    padding: 28px;
+
+    border-radius: 22px;
+
+    background: #17171d;
+
+    border: 1px solid rgba(255,255,255,0.09);
+
+    box-shadow:
+        0 30px 80px rgba(0,0,0,0.5);
+}
+
+
+.modal-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 22px;
+}
+
+
+.modal-header h2 {
+    margin: 0;
+}
+
+
+.close-modal {
+    border: none;
+
+    background: transparent;
+
+    color: #aaa;
+
+    font-size: 25px;
+
+    cursor: pointer;
+}
+
+
+.form-group {
+    margin-bottom: 17px;
+}
+
+
+.form-group label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-size: 13px;
+
+    font-weight: 700;
+}
+
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 12px 13px;
+
+    border-radius: 11px;
+
+    border: 1px solid rgba(255,255,255,0.09);
+
+    outline: none;
+
+    background: rgba(255,255,255,0.05);
+
+    color: white;
+
+    font-family: inherit;
+}
+
+
+.form-group textarea {
+    min-height: 100px;
+
+    resize: vertical;
+}
+
+
+.save-profile {
+    width: 100%;
+
+    padding: 13px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background: #8b5cf6;
+
+    color: white;
+
+    font-weight: 800;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   LIGHT THEME
+========================================================= */
+
+body.light .profile-hero {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(139,92,246,0.10),
+            rgba(59,130,246,0.05)
+        );
+
+    border-color: rgba(0,0,0,0.08);
+}
+
+
+body.light .profile-card,
+body.light .stat-card,
+body.light .project-card {
+    background: rgba(0,0,0,0.025);
+
+    border-color: rgba(0,0,0,0.08);
+}
+
+
+body.light .bio {
+    color: #555;
+}
+
+
+body.light .skill {
+    background: rgba(139,92,246,0.09);
+}
+
+
+body.light .modal-box {
+    background: white;
+
+    color: #18181b;
+}
+
+
+body.light .form-group input,
+body.light .form-group textarea {
+    background: #f5f5f7;
+
+    color: #18181b;
+
+    border-color: #ddd;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .profile-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .profile-page {
+        padding: 25px 15px 50px;
+    }
+
+
+    .profile-hero {
+        padding: 25px 20px;
+    }
+
+
+    .profile-main {
+        flex-direction: column;
+
+        text-align: center;
+    }
+
+
+    .profile-name-row {
+        justify-content: center;
+    }
+
+
+    .profile-actions {
+        justify-content: center;
+    }
+
+
+    .profile-stats {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+
+    .project-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 450px) {
+
+    .profile-name {
+        font-size: 27px;
+    }
+
+
+    .profile-avatar {
+        width: 100px;
+        height: 100px;
+
+        font-size: 45px;
+    }
+
+}
+
+
+/* =========================================================
+   PROFILE TOAST
+========================================================= */
+
+.profile-toast {
+    position: fixed;
+
+    bottom: 25px;
+    left: 50%;
+
+    transform:
+        translateX(-50%)
+        translateY(100px);
+
+    padding: 13px 20px;
+
+    border-radius: 12px;
+
+    background: #18181b;
+
+    color: white;
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,0.35);
+
+    z-index: 2000;
+
+    opacity: 0;
+
+    transition: 0.3s ease;
+
+    font-size: 13px;
+
+    font-weight: 600;
+}
+
+
+.profile-toast.show {
+    opacity: 1;
+
+    transform:
+        translateX(-50%)
+        translateY(0);
+}
+
+</style>
+
+
+<!-- =========================================================
+     PROFILE PAGE
+========================================================= -->
+
+<section class="profile-page">
+
+
+    <!-- =====================================================
+         PROFILE HERO
+    ====================================================== -->
+
+    <div class="profile-hero">
+
+        <div class="profile-main">
+
+
+            <!-- PROFILE PHOTO -->
+
+            <div class="profile-avatar">
+
+                🐍
+
+            </div>
+
+
+            <!-- PROFILE INFORMATION -->
+
+            <div class="profile-info">
+
+                <div class="profile-name-row">
+
+                    <h1 class="profile-name">
+                        Python Learner
+                    </h1>
+
+                    <span class="verified">
+                        ✓
+                    </span>
+
+                </div>
+
+
+                <div class="username">
+                    @python_learner
+                </div>
+
+
+                <p class="bio">
+
+                    Learning Python one line at a time 🐍
+                    <br>
+
+                    Building projects, solving challenges,
+                    and sharing my coding journey.
+
+                </p>
+
+
+                <div class="profile-actions">
+
+                    <button
+                        class="profile-button edit-button"
+                        id="editProfileButton">
+
+                        ✏️ Edit Profile
+
+                    </button>
+
+
+                    <button
+                        class="profile-button share-button"
+                        id="shareProfileButton">
+
+                        🔗 Share Profile
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             PROFILE STATS
+        ================================================== -->
+
+        <div class="profile-stats">
+
+
+            <div class="stat-card">
+
+                <span
+                    class="stat-number"
+                    id="projectCount">
+
+                    6
+
+                </span>
+
+                <span class="stat-label">
+                    Projects
+                </span>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span
+                    class="stat-number">
+
+                    248
+
+                </span>
+
+                <span class="stat-label">
+                    Followers
+                </span>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span
+                    class="stat-number">
+
+                    96
+
+                </span>
+
+                <span class="stat-label">
+                    Following
+                </span>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span
+                    class="stat-number">
+
+                    1.8K
+
+                </span>
+
+                <span class="stat-label">
+                    Likes
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         PROFILE CONTENT GRID
+    ====================================================== -->
+
+    <div class="profile-grid">
+
+
+        <!-- =================================================
+             LEFT COLUMN
+        ================================================== -->
+
+        <div>
+
+
+            <!-- LEARNING PROGRESS -->
+
+            <div class="profile-card">
+
+                <div class="card-title">
+
+                    <h2>
+                        📚 Learning Progress
+                    </h2>
+
+                    <span>
+                        Level 2
+                    </span>
+
+                </div>
+
+
+                <div class="level-row">
+
+                    <span class="level-name">
+                        Python Explorer
+                    </span>
+
+                    <span class="level-xp">
+                        680 / 1000 XP
+                    </span>
+
+                </div>
+
+
+                <div class="progress-bar">
+
+                    <div class="progress-fill"></div>
+
+                </div>
+
+
+                <div class="progress-text">
+
+                    320 XP needed for Level 3 🚀
+
+                </div>
+
+            </div>
+
+
+            <!-- SKILLS -->
+
+            <div class="profile-card">
+
+                <div class="card-title">
+
+                    <h2>
+                        🧠 Skills
+                    </h2>
+
+                </div>
+
+
+                <div class="skills">
+
+                    <span class="skill">
+                        Python
+                    </span>
+
+                    <span class="skill">
+                        HTML
+                    </span>
+
+                    <span class="skill">
+                        CSS
+                    </span>
+
+                    <span class="skill">
+                        SQL
+                    </span>
+
+                    <span class="skill">
+                        Flask
+                    </span>
+
+                    <span class="skill">
+                        Git
+                    </span>
+
+                    <span class="skill">
+                        AI / ML
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- BADGES -->
+
+            <div class="profile-card">
+
+                <div class="card-title">
+
+                    <h2>
+                        🏆 Badges
+                    </h2>
+
+                    <span>
+                        6 earned
+                    </span>
+
+                </div>
+
+
+                <div class="badges">
+
+
+                    <div
+                        class="badge"
+                        data-badge="Python Beginner">
+
+                        <span class="badge-icon">
+                            🐣
+                        </span>
+
+                        <span class="badge-name">
+                            Python Beginner
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="badge"
+                        data-badge="Pythonista">
+
+                        <span class="badge-icon">
+                            🐍
+                        </span>
+
+                        <span class="badge-name">
+                            Pythonista
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="badge"
+                        data-badge="7 Day Streak">
+
+                        <span class="badge-icon">
+                            🔥
+                        </span>
+
+                        <span class="badge-name">
+                            Streak Master
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="badge"
+                        data-badge="Project Creator">
+
+                        <span class="badge-icon">
+                            🚀
+                        </span>
+
+                        <span class="badge-name">
+                            Creator
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="badge"
+                        data-badge="Code Explorer">
+
+                        <span class="badge-icon">
+                            💻
+                        </span>
+
+                        <span class="badge-name">
+                            Code Explorer
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="badge"
+                        data-badge="Community Favorite">
+
+                        <span class="badge-icon">
+                            💜
+                        </span>
+
+                        <span class="badge-name">
+                            Favorite
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             RIGHT COLUMN
+        ================================================== -->
+
+        <div>
+
+
+            <!-- MY PROJECTS -->
+
+            <div class="profile-card">
+
+                <div class="card-title">
+
+                    <h2>
+                        🚀 My Projects
+                    </h2>
+
+                    <span>
+                        View all →
+                    </span>
+
+                </div>
+
+
+                <div class="project-grid">
+
+
+                    <!-- PROJECT 1 -->
+
+                    <div class="project-card">
+
+                        <div class="project-cover">
+                            🤖
+                        </div>
+
+                        <div class="project-content">
+
+                            <h3 class="project-name">
+                                AI Study Assistant
+                            </h3>
+
+                            <p class="project-description">
+                                A Python-based assistant
+                                that helps students organize
+                                their study sessions.
+                            </p>
+
+                            <div class="project-footer">
+
+                                <span class="project-rating">
+                                    ⭐ 4.8
+                                </span>
+
+                                <button
+                                    class="project-button"
+                                    data-project="AI Study Assistant">
+
+                                    View
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PROJECT 2 -->
+
+                    <div class="project-card">
+
+                        <div class="project-cover">
+                            🐍
+                        </div>
+
+                        <div class="project-content">
+
+                            <h3 class="project-name">
+                                Python Calculator
+                            </h3>
+
+                            <p class="project-description">
+                                A smart calculator built
+                                using Python concepts.
+                            </p>
+
+                            <div class="project-footer">
+
+                                <span class="project-rating">
+                                    ⭐ 4.6
+                                </span>
+
+                                <button
+                                    class="project-button"
+                                    data-project="Python Calculator">
+
+                                    View
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PROJECT 3 -->
+
+                    <div class="project-card">
+
+                        <div class="project-cover">
+                            🌐
+                        </div>
+
+                        <div class="project-content">
+
+                            <h3 class="project-name">
+                                Student Portfolio
+                            </h3>
+
+                            <p class="project-description">
+                                A responsive portfolio website
+                                for students.
+                            </p>
+
+                            <div class="project-footer">
+
+                                <span class="project-rating">
+                                    ⭐ 4.9
+                                </span>
+
+                                <button
+                                    class="project-button"
+                                    data-project="Student Portfolio">
+
+                                    View
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PROJECT 4 -->
+
+                    <div class="project-card">
+
+                        <div class="project-cover">
+                            🎮
+                        </div>
+
+                        <div class="project-content">
+
+                            <h3 class="project-name">
+                                Python Mini Game
+                            </h3>
+
+                            <p class="project-description">
+                                A fun beginner-friendly
+                                Python game.
+                            </p>
+
+                            <div class="project-footer">
+
+                                <span class="project-rating">
+                                    ⭐ 4.5
+                                </span>
+
+                                <button
+                                    class="project-button"
+                                    data-project="Python Mini Game">
+
+                                    View
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- RECENT ACTIVITY -->
+
+            <div class="profile-card">
+
+                <div class="card-title">
+
+                    <h2>
+                        ⚡ Recent Activity
+                    </h2>
+
+                </div>
+
+
+                <div class="activity">
+
+
+                    <div class="activity-item">
+
+                        <div class="activity-icon">
+                            🐍
+                        </div>
+
+                        <div class="activity-text">
+
+                            Completed
+                            <strong>
+                                Data Types
+                            </strong>
+
+                            lesson.
+
+                            <span class="activity-time">
+                                2 hours ago
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="activity-item">
+
+                        <div class="activity-icon">
+                            🚀
+                        </div>
+
+                        <div class="activity-text">
+
+                            Created a new project:
+                            <strong>
+                                AI Study Assistant
+                            </strong>
+
+                            <span class="activity-time">
+                                Yesterday
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="activity-item">
+
+                        <div class="activity-icon">
+                            🎬
+                        </div>
+
+                        <div class="activity-text">
+
+                            Posted a Python reel.
+
+                            <span class="activity-time">
+                                2 days ago
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="activity-item">
+
+                        <div class="activity-icon">
+                            🏆
+                        </div>
+
+                        <div class="activity-text">
+
+                            Earned the
+                            <strong>
+                                Pythonista
+                            </strong>
+                            badge.
+
+                            <span class="activity-time">
+                                3 days ago
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     EDIT PROFILE MODAL
+========================================================= -->
+
+<div
+    class="modal"
+    id="profileModal">
+
+    <div class="modal-box">
+
+
+        <div class="modal-header">
+
+            <h2>
+                ✏️ Edit Profile
+            </h2>
+
+            <button
+                class="close-modal"
+                id="closeProfileModal">
+
+                ×
+
+            </button>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Display Name
+            </label>
+
+            <input
+                type="text"
+                id="profileNameInput"
+                value="Python Learner">
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Username
+            </label>
+
+            <input
+                type="text"
+                id="usernameInput"
+                value="@python_learner">
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Bio
+            </label>
+
+            <textarea
+                id="bioInput">Learning Python one line at a time 🐍
+Building projects, solving challenges, and sharing my coding journey.</textarea>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Skills
+            </label>
+
+            <input
+                type="text"
+                id="skillsInput"
+                value="Python, HTML, CSS, SQL, Flask, Git, AI / ML">
+
+        </div>
+
+
+        <button
+            class="save-profile"
+            id="saveProfileButton">
+
+            💾 Save Profile
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     TOAST
+========================================================= -->
+
+<div
+    class="profile-toast"
+    id="profileToast">
+
+    Profile updated successfully! ✓
+
+</div>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+
+    /* =====================================================
+       ELEMENTS
+    ====================================================== */
+
+    const editButton =
+        document.getElementById("editProfileButton");
+
+    const shareButton =
+        document.getElementById("shareProfileButton");
+
+    const modal =
+        document.getElementById("profileModal");
+
+    const closeModal =
+        document.getElementById("closeProfileModal");
+
+    const saveButton =
+        document.getElementById("saveProfileButton");
+
+    const toast =
+        document.getElementById("profileToast");
+
+    const nameInput =
+        document.getElementById("profileNameInput");
+
+    const usernameInput =
+        document.getElementById("usernameInput");
+
+    const bioInput =
+        document.getElementById("bioInput");
+
+    const skillsInput =
+        document.getElementById("skillsInput");
+
+
+    /* =====================================================
+       EDIT PROFILE
+    ====================================================== */
+
+    editButton.addEventListener("click", function () {
+
+        modal.classList.add("active");
+
+    });
+
+
+    /* =====================================================
+       CLOSE MODAL
+    ====================================================== */
+
+    closeModal.addEventListener("click", function () {
+
+        modal.classList.remove("active");
+
+    });
+
+
+    modal.addEventListener("click", function (event) {
+
+        if (event.target === modal) {
+
+            modal.classList.remove("active");
+
+        }
+
+    });
+
+
+    /* =====================================================
+       SAVE PROFILE
+    ====================================================== */
+
+    saveButton.addEventListener("click", function () {
+
+        const name =
+            nameInput.value.trim();
+
+        const username =
+            usernameInput.value.trim();
+
+        const bio =
+            bioInput.value.trim();
+
+
+        if (!name) {
+
+            alert("Please enter your name.");
+
+            return;
+
+        }
+
+
+        document.querySelector(
+            ".profile-name"
+        ).textContent = name;
+
+
+        document.querySelector(
+            ".username"
+        ).textContent =
+            username || "@python_learner";
+
+
+        document.querySelector(
+            ".bio"
+        ).innerHTML =
+            bio.replace(/\n/g, "<br>");
+
+
+        modal.classList.remove("active");
+
+
+        showToast(
+            "Profile updated successfully! ✓"
+        );
+
+    });
+
+
+    /* =====================================================
+       SHARE PROFILE
+    ====================================================== */
+
+    shareButton.addEventListener("click", async function () {
+
+        const profileUrl =
+            window.location.href;
+
+
+        try {
+
+            if (navigator.share) {
+
+                await navigator.share({
+
+                    title: "SNEK.PY Profile",
+
+                    text:
+                        "Check out this Python learner's profile on SNEK.PY!",
+
+                    url:
+                        profileUrl
+
+                });
+
+            } else if (
+                navigator.clipboard
+            ) {
+
+                await navigator.clipboard.writeText(
+                    profileUrl
+                );
+
+                showToast(
+                    "Profile link copied! 🔗"
+                );
+
+            } else {
+
+                showToast(
+                    "Profile link: " +
+                    profileUrl
+                );
+
+            }
+
+        } catch (error) {
+
+            console.log(
+                "Share cancelled."
+            );
+
+        }
+
+    });
+
+
+    /* =====================================================
+       BADGES
+    ====================================================== */
+
+    const badges =
+        document.querySelectorAll(".badge");
+
+
+    badges.forEach(function (badge) {
+
+        badge.addEventListener(
+            "click",
+            function () {
+
+                const badgeName =
+                    badge.getAttribute(
+                        "data-badge"
+                    );
+
+
+                showToast(
+                    "🏆 " +
+                    badgeName +
+                    " badge earned!"
+                );
+
+            }
+        );
+
+    });
+
+
+    /* =====================================================
+       PROJECT BUTTONS
+    ====================================================== */
+
+    const projectButtons =
+        document.querySelectorAll(
+            ".project-button"
+        );
+
+
+    projectButtons.forEach(function (button) {
+
+        button.addEventListener(
+            "click",
+            function () {
+
+                const project =
+                    button.getAttribute(
+                        "data-project"
+                    );
+
+
+                showToast(
+                    "🚀 Opening " +
+                    project +
+                    "..."
+                );
+
+
+                setTimeout(function () {
+
+                    window.location.href =
+                        "{{ url_for('projects') }}";
+
+                }, 700);
+
+            }
+        );
+
+    });
+
+
+    /* =====================================================
+       KEYBOARD ESCAPE
+    ====================================================== */
+
+    document.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (
+                event.key === "Escape" &&
+                modal.classList.contains("active")
+            ) {
+
+                modal.classList.remove(
+                    "active"
+                );
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       TOAST FUNCTION
+    ====================================================== */
+
+    function showToast(message) {
+
+        toast.textContent =
+            message;
+
+        toast.classList.add(
+            "show"
+        );
+
+
+        setTimeout(function () {
+
+            toast.classList.remove(
+                "show"
+            );
+
+        }, 2500);
+
+    }
+
+});
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}SNEK.PY{% endblock %}
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+
+<body>
+
+    <!-- =====================================================
+         NAVIGATION BAR
+    ====================================================== -->
+
+    <nav class="navbar">
+
+        <!-- LOGO -->
+
+        <a
+            href="{{ url_for('home') }}"
+            class="logo">
+
+            🐍 SNEK.PY
+
+        </a>
+
+
+        <!-- NAVIGATION LINKS -->
+
+        <div class="nav-links">
+
+            <!-- HOME -->
+
+            <a href="{{ url_for('home') }}">
+
+                🏠 Home
+
+            </a>
+
+
+            <!-- LEARN -->
+
+            <a href="{{ url_for('learn') }}">
+
+                📚 Learn
+
+            </a>
+
+
+            <!-- CODE -->
+
+            <a href="{{ url_for('code_lab') }}">
+
+                💻 Code
+
+            </a>
+
+
+            <!-- REELS -->
+
+            <a href="{{ url_for('reels') }}">
+
+                🎬 Reels
+
+            </a>
+
+
+            <!-- PROJECTS -->
+
+            <a href="{{ url_for('projects') }}">
+
+                🚀 Projects
+
+            </a>
+
+
+            <!-- PROFILE -->
+
+            <a href="{{ url_for('profile') }}">
+
+                👤 Profile
+
+            </a>
+
+
+            <!-- THEME -->
+
+            <button
+                id="themeToggle"
+                class="theme-button"
+                type="button">
+
+                🌙 / ☀️
+
+            </button>
+
+        </div>
+
+    </nav>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main>
+
+        {% block content %}
+
+        {% endblock %}
+
+    </main>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script
+        src="{{ url_for('static', filename='js/main.js') }}">
+    </script>
+
+</body>
+
+</html>

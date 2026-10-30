@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}
+SNEK.PY — Learn Python
+{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <p class="eyebrow">
+            🐍 WELCOME TO SNEK.PY
+        </p>
+
+        <h1>
+            Learn Python.
+            <span>Build Something.</span>
+        </h1>
+
+        <p class="hero-description">
+            A fun and interactive place to learn Python,
+            practice coding, and level up your skills.
+        </p>
+
+        <div class="hero-buttons">
+
+            <!-- START LEARNING -->
+
+            <a href="{{ url_for('learn') }}"
+               class="primary-button">
+
+                Start Learning 🚀
+
+            </a>
+
+
+            <!-- EXPLORE -->
+
+            <a href="{{ url_for('learn') }}"
+               class="secondary-button">
+
+                Explore 🐍
+
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
